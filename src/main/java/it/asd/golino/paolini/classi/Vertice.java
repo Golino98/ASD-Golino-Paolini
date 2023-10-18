@@ -10,5 +10,7 @@ public class Vertice
         vertici.add(vertice);
     }
 
-
+    public static ArrayList<Cella> getVertici() {
+        return vertici;
+    }
 }

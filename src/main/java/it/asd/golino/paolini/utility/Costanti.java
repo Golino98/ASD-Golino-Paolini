@@ -13,5 +13,8 @@ public class Costanti {
     public static final String ERRORE_CONVERSIONE_NUMERO = "Errore: inserisci valori numerici validi.";
     public static final String ERRORE_NUMERO_NEGATIVO = "Errore: i valori devono essere tutti positivi.";
 
-    public static final String NOME_CELLA = "( %d , %d )\n";
+    public static final String NOME_CELLA = "(%d , %d)";
+
+    public static final String STAMPA_CELLA_GRAFO = "Vertice %s è collegato a: ";
+    public static final String STAMPA_PESO_GRAFO =  "%s con peso %.3f, ";
 }
