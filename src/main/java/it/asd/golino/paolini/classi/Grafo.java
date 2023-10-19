@@ -51,23 +51,19 @@ public class Grafo {
         // CELLA OVEST
         cardinali.add(new Cella(vertice.getRiga(), vertice.getColonna() - 1, StatoCelle.LIBERA.getValore()));
 
-
         //RISOLVERE LA STAMPA DOPPIA
         for (Cella diagonale : diagonali) {
-            for (Cella vertex : grafo.vertexSet())
-            {
-                if (diagonale.toString().equalsIgnoreCase(vertex.toString()))
-                {
+            for (Cella vertex : grafo.vertexSet()) {
+                if (diagonale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
                     grafo.addEdge(vertice, vertex);
                     grafo.setEdgeWeight(vertice, vertex, Costanti.DIAGONALE);
                 }
             }
         }
 
-        for (Cella cardinale : cardinali)
-        {
+        for (Cella cardinale : cardinali) {
             for (Cella vertex : grafo.vertexSet()) {
-                if (cardinale.toString().equalsIgnoreCase(vertex.toString())) {
+                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
                     grafo.addEdge(vertice, vertex);
                     grafo.setEdgeWeight(vertice, vertex, Costanti.MOSSA_CARDINALE);
                 }
@@ -85,7 +81,7 @@ public class Grafo {
                 double peso = grafo.getEdgeWeight(edge);
                 System.out.format(Costanti.STAMPA_PESO_GRAFO, altroVertice, peso);
             }
-            System.out.println();
+            System.out.print("}\n");
         }
     }
 }

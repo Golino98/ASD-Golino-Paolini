@@ -15,6 +15,6 @@ public class Costanti {
 
     public static final String NOME_CELLA = "(%d , %d)";
 
-    public static final String STAMPA_CELLA_GRAFO = "Vertice %s è collegato a: ";
-    public static final String STAMPA_PESO_GRAFO =  "%s con peso %.3f, ";
+    public static final String STAMPA_CELLA_GRAFO = "Vertice %s -> : { ";
+    public static final String STAMPA_PESO_GRAFO =  "[%s - %.3f];  ";
 }
