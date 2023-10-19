@@ -6,6 +6,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Grafo {
@@ -72,16 +75,37 @@ public class Grafo {
     }
 
     public static void stampGrafo() {
-        for (Cella vertice : grafo.vertexSet()) {
-            System.out.format(Costanti.STAMPA_CELLA_GRAFO, vertice);
-            for (DefaultWeightedEdge edge : grafo.edgesOf(vertice)) {
-                Cella target = grafo.getEdgeTarget(edge);
-                Cella source = grafo.getEdgeSource(edge);
-                Cella altroVertice = target.equals(vertice) ? source : target;
-                double peso = grafo.getEdgeWeight(edge);
-                System.out.format(Costanti.STAMPA_PESO_GRAFO, altroVertice, peso);
+        PrintWriter consoleWriter = new PrintWriter(System.out);
+
+        try {
+            PrintWriter fileWriter = new PrintWriter(new FileWriter("output.txt"));
+
+            for (Cella vertice : grafo.vertexSet()) {
+                consoleWriter.format(Costanti.STAMPA_CELLA_GRAFO, vertice);
+                fileWriter.format(Costanti.STAMPA_CELLA_GRAFO, vertice);
+
+                for (DefaultWeightedEdge edge : grafo.edgesOf(vertice)) {
+                    Cella target = grafo.getEdgeTarget(edge);
+                    Cella source = grafo.getEdgeSource(edge);
+                    Cella altroVertice = target.equals(vertice) ? source : target;
+                    double peso = grafo.getEdgeWeight(edge);
+
+                    consoleWriter.format(Costanti.STAMPA_PESO_GRAFO, altroVertice, peso);
+                    fileWriter.format(Costanti.STAMPA_PESO_GRAFO, altroVertice, peso);
+                }
+
+                consoleWriter.println("}");
+                fileWriter.println("}");
             }
-            System.out.print("}\n");
+
+            fileWriter.flush();
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            consoleWriter.flush();
+            consoleWriter.close();
         }
     }
 }
