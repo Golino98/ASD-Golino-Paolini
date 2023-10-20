@@ -76,7 +76,7 @@ public class Grafo {
 
         try {
             // Crea un oggetto PrintWriter per scrivere l'output su un file di testo chiamato "output.txt"
-            PrintWriter fileWriter = new PrintWriter(new FileWriter("output.txt"));
+            PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"));
 
             for (Cella vertice : grafo.vertexSet()) {
                 // Stampa il contenuto del vertice sia sulla console che nel file di testo

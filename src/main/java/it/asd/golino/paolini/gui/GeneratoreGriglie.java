@@ -2,8 +2,11 @@ package it.asd.golino.paolini.gui;
 
 import it.asd.golino.paolini.classi.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 public class GeneratoreGriglie extends JFrame {
@@ -79,5 +82,24 @@ public class GeneratoreGriglie extends JFrame {
         dialogGrid.pack();
         StyleSystemGui.setCenterOfTheScreen(dialogGrid);
         dialogGrid.setVisible(true);
+
+        // Dopo aver aggiunto i componenti al frame dialogGrid, cattura l'immagine
+        BufferedImage grigliaImage = catturaImmagineGriglia(dialogGrid);
+
+        try {
+            // Specifica il percorso in cui desideri salvare l'immagine
+            File output = new File("output\\griglia.png");
+
+            // Salva l'immagine
+            ImageIO.write(grigliaImage, "png", output);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static BufferedImage catturaImmagineGriglia(JFrame frame) {
+        BufferedImage image = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
+        frame.paint(image.getGraphics());
+        return image;
     }
 }
