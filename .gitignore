@@ -37,4 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-/output
+/output/grafo.txt
+/output/griglia.png
