@@ -3,7 +3,7 @@ package it.asd.golino.paolini.classi;
 import static it.asd.golino.paolini.utility.Costanti.NOME_CELLA;
 
 public class Cella {
-    private int x, y;
+    private int riga, colonna;
     private int status;
 
     /**
@@ -18,17 +18,17 @@ public class Cella {
      *               3 -> end per agent
      */
     public Cella(int x, int y, int status) {
-        this.x = x;
-        this.y = y;
+        this.riga = x;
+        this.colonna = y;
         this.status = status;
     }
 
-    public int getX() {
-        return x;
+    public int getRiga() {
+        return riga;
     }
 
-    public int getY() {
-        return y;
+    public int getColonna() {
+        return colonna;
     }
 
     public void setStatus(int status) {
@@ -41,6 +41,6 @@ public class Cella {
 
     @Override
     public String toString() {
-        return String.format(NOME_CELLA,x,y);
+        return String.format(NOME_CELLA, riga, colonna);
     }
 }

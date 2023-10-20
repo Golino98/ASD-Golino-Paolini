@@ -1,12 +1,12 @@
 package it.asd.golino.paolini.gui;
 
-import it.asd.golino.paolini.classi.Agente;
-import it.asd.golino.paolini.classi.Cella;
-import it.asd.golino.paolini.classi.Griglia;
-import it.asd.golino.paolini.classi.Vertice;
+import it.asd.golino.paolini.classi.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 public class GeneratoreGriglie extends JFrame {
@@ -46,8 +46,8 @@ public class GeneratoreGriglie extends JFrame {
                     case 2:
                         int rigaStart = i;
                         int colonnaStart = j;
-                        Agente agenteStart = listaAgenti.stream().filter(a -> a.getCellaStart().getX() == rigaStart
-                                && a.getCellaStart().getY() == colonnaStart).findFirst().orElse(null);
+                        Agente agenteStart = listaAgenti.stream().filter(a -> a.getCellaStart().getRiga() == rigaStart
+                                && a.getCellaStart().getColonna() == colonnaStart).findFirst().orElse(null);
 
                         cellPanel.setBackground(agenteStart.getRandomColor());
                         JLabel labelStart = new JLabel("A_s_" + agenteStart.getIndice()); // Scrivi la lettera "A" al centro della cella
@@ -60,8 +60,8 @@ public class GeneratoreGriglie extends JFrame {
                     case 3:
                         int rigaGoal = i;
                         int colonnaGoal = j;
-                        Agente agenteGoal = listaAgenti.stream().filter(a -> a.getCellaGoal().getX() == rigaGoal
-                                && a.getCellaGoal().getY() == colonnaGoal).findFirst().orElse(null);
+                        Agente agenteGoal = listaAgenti.stream().filter(a -> a.getCellaGoal().getRiga() == rigaGoal
+                                && a.getCellaGoal().getColonna() == colonnaGoal).findFirst().orElse(null);
 
                         cellPanel.setBackground(agenteGoal.getRandomColor());
                         JLabel labelEnd = new JLabel("A_g_" + agenteGoal.getIndice()); // Scrivi la lettera "A" al centro della cella
@@ -76,9 +76,30 @@ public class GeneratoreGriglie extends JFrame {
                 gridPanel.add(cellPanel);
             }
         }
+
+        Grafo.creaGrafo();
         dialogGrid.add(gridPanel);
         dialogGrid.pack();
         StyleSystemGui.setCenterOfTheScreen(dialogGrid);
         dialogGrid.setVisible(true);
+
+        // Dopo aver aggiunto i componenti al frame dialogGrid, cattura l'immagine
+        BufferedImage grigliaImage = catturaImmagineGriglia(dialogGrid);
+
+        try {
+            // Specifica il percorso in cui desideri salvare l'immagine
+            File output = new File("output\\griglia.png");
+
+            // Salva l'immagine
+            ImageIO.write(grigliaImage, "png", output);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static BufferedImage catturaImmagineGriglia(JFrame frame) {
+        BufferedImage image = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
+        frame.paint(image.getGraphics());
+        return image;
     }
 }
