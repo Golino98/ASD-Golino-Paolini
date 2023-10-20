@@ -73,8 +73,8 @@ public class GeneratoreGriglie extends JFrame {
                 gridPanel.add(cellPanel);
             }
         }
-        Grafo grafo  = new Grafo();
-        grafo.creaGrafo();
+
+        Grafo.creaGrafo();
         dialogGrid.add(gridPanel);
         dialogGrid.pack();
         StyleSystemGui.setCenterOfTheScreen(dialogGrid);
