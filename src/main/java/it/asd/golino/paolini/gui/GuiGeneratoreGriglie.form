@@ -120,7 +120,7 @@
             </constraints>
             <properties>
               <font/>
-              <text value="Percentuale celle traversabili"/>
+              <text value="Percentuale celle non traversabili"/>
             </properties>
           </component>
           <component id="4b9bb" class="javax.swing.JTextField" binding="fattoreAgglomerazioneField">
