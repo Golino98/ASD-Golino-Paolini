@@ -8,31 +8,41 @@ import java.util.Random;
 
 public class Griglia {
 
-    private final ArrayList<ArrayList<Cella>> griglia = new ArrayList<>();
     public static ArrayList<Agente> listaAgenti = new ArrayList<>();
 
     private final int altezza;
     private final int larghezza;
+    private Cella[][] griglia;
 
     private static int numeroCelleDaOccupare;
     private final int agglomerazione;
+
     private final int agenti;
     private Random rnd = new Random();
 
-    public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti) {
+    public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti)
+    {
         this.altezza = altezza;
         this.larghezza = larghezza;
+
+        this.griglia = new Cella[altezza][larghezza];
+        for(int i = 0; i < altezza; i++)
+        {
+            for(int j = 0; j < larghezza; j++)
+            {
+                griglia[i][j] = new Cella(i,j, StatoCelle.LIBERA.getValore());
+            }
+        }
+
         numeroCelleDaOccupare = Calcolatore.calcolaNumeroCellePercentuale(altezza, larghezza, percentuale);
         this.agglomerazione = agglomerazione;
         this.agenti = agenti;
-        initializeGrid();
+
         generateAgents();
         generateObstacles();
     }
 
-    public ArrayList<ArrayList<Cella>> getGriglia() {
-        return griglia;
-    }
+    public Cella[][] getGriglia() {return griglia;}
 
     public int getAltezza() {
         return altezza;
@@ -42,18 +52,6 @@ public class Griglia {
         return larghezza;
     }
 
-    /**
-     * Metodo che permette la creazione di tutte le celle (inizialmente tutte libere, quindi con stato = 0)
-     */
-    private void initializeGrid() {
-        for (int i = 0; i < altezza; i++) {
-            ArrayList<Cella> riga = new ArrayList<>();
-            for (int j = 0; j < larghezza; j++) {
-                riga.add(new Cella(i, j, StatoCelle.LIBERA.getValore()));
-            }
-            griglia.add(riga);
-        }
-    }
 
     /**
      * Metodo che permette di generare degli agenti (agente start stato 2, agente goal stato 3)
@@ -97,7 +95,7 @@ public class Griglia {
             int riga = rnd.nextInt(altezza);
             int colonna = rnd.nextInt(larghezza);
 
-            cambiaStatoCella(griglia.get(riga).get(colonna));
+            cambiaStatoCella(griglia[riga][colonna]);
 
             int nextCell = rnd.nextInt(9);
             switch (nextCell) {
@@ -135,22 +133,22 @@ public class Griglia {
 
     public void muoviNord(int riga, int colonna) {
         if (riga < 1) return;
-        cambiaStatoCella(griglia.get(riga - 1).get(colonna));
+        cambiaStatoCella(griglia[riga - 1][colonna]);
     }
 
     public void muoviEast(int riga, int colonna) {
         if (colonna >= this.larghezza - 1) return;
-        cambiaStatoCella(griglia.get(riga).get(colonna + 1));
+        cambiaStatoCella(griglia[riga][colonna + 1]);
     }
 
     public void muoviSud(int riga, int colonna) {
         if (riga >= this.altezza - 1) return;
-        cambiaStatoCella(griglia.get(riga + 1).get(colonna));
+        cambiaStatoCella(griglia[riga + 1][colonna]);
     }
 
     public void muoviOvest(int riga, int colonna) {
         if (colonna < 1) return;
-        cambiaStatoCella(griglia.get(riga).get(colonna - 1));
+        cambiaStatoCella(griglia[riga][colonna - 1]);
     }
 
     /**
@@ -158,7 +156,8 @@ public class Griglia {
      *
      * @param cella -> cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
      */
-    private void cambiaStatoCella(Cella cella) {
+    private void cambiaStatoCella(Cella cella)
+    {
         if (cella.getCellStatus() == StatoCelle.LIBERA.getValore()) {
             cella.setStatus(StatoCelle.NON_ATTRAVERSABILE.getValore());
             numeroCelleDaOccupare--;
@@ -175,9 +174,10 @@ public class Griglia {
      * @param statoFinale   -> valore rappresentante lo stato finale della cella
      * @return -> true se viene effettuato il cambio di stato, false altrimenti.
      */
-    private boolean cambiaStatoCella(int riga, int colonna, int statoIniziale, int statoFinale) {
-        if (griglia.get(riga).get(colonna).getCellStatus() == statoIniziale) {
-            griglia.get(riga).get(colonna).setStatus(statoFinale);
+    private boolean cambiaStatoCella(int riga, int colonna, int statoIniziale, int statoFinale)
+    {
+        if (griglia[riga][colonna].getCellStatus() == statoIniziale) {
+            griglia[riga][colonna].setStatus(statoFinale);
             return true;
         }
         return false;

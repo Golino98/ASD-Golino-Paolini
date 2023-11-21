@@ -16,7 +16,9 @@ public class GeneratoreGriglie extends JFrame {
         int altezza = griglia.getAltezza();
         int larghezza = griglia.getLarghezza();
 
-        ArrayList<ArrayList<Cella>> grid = griglia.getGriglia();
+        Cella[][] grid = griglia.getGriglia();
+
+        //rendere array
         ArrayList<Agente> listaAgenti = griglia.getListaAgenti();
 
         JFrame dialogGrid = new JFrame("Griglia");
@@ -31,7 +33,7 @@ public class GeneratoreGriglie extends JFrame {
 
         for (int i = 0; i < altezza; i++) {
             for (int j = 0; j < larghezza; j++) {
-                Cella cella = grid.get(i).get(j);
+                Cella cella = grid[i][j];
                 JPanel cellPanel = new JPanel();
                 cellPanel.setPreferredSize(new Dimension(60, 60));
                 cellPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -46,6 +48,7 @@ public class GeneratoreGriglie extends JFrame {
                     case 2:
                         int rigaStart = i;
                         int colonnaStart = j;
+
                         Agente agenteStart = listaAgenti.stream().filter(a -> a.getCellaStart().getRiga() == rigaStart
                                 && a.getCellaStart().getColonna() == colonnaStart).findFirst().orElse(null);
 
