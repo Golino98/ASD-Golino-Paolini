@@ -12,13 +12,13 @@ public class Griglia {
 
     private final int altezza;
     private final int larghezza;
-    private Cella[][] griglia;
+    private final Cella[][] griglia;
 
     private static int numeroCelleDaOccupare;
     private final int agglomerazione;
 
     private final int agenti;
-    private Random rnd = new Random();
+    private final Random rnd = new Random();
 
     public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti)
     {
