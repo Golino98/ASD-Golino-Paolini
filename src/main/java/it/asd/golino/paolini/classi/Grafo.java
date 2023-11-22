@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import static it.asd.golino.paolini.utility.Costanti.PATH_ORIENTED_GRAPH_IMAGE;
+import static it.asd.golino.paolini.utility.Costanti.PNG;
+
 public class Grafo {
 
     // Creazione di un grafo direzionato pesato utilizzando JGraphT
@@ -30,15 +33,8 @@ public class Grafo {
 
     // Metodo per creare il grafo
     public static void creaGrafo() {
-        // Aggiungi i vertici al grafo
-        for (Cella vertice : Vertice.getVertici()) {
-            grafo.addVertex(vertice);
-        }
-        // Crea i collegamenti tra i vertici
-        for (Cella vertice : grafo.vertexSet()) {
-            creaConnessioni(vertice);
-        }
-        // Stampa il grafo
+        Vertice.getVertici().forEach(grafo::addVertex);
+        grafo.vertexSet().forEach(Grafo::creaConnessioni);
         stampaGrafo();
     }
 
@@ -84,13 +80,10 @@ public class Grafo {
     // Metodo per stampare il grafo
     public static void stampaGrafo() {
         // Crea un oggetto PrintWriter per scrivere l'output sulla console
-        PrintWriter consoleWriter = new PrintWriter(System.out);
+        try (PrintWriter consoleWriter = new PrintWriter(System.out);
+             PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"))) {
 
-        try {
-            // Crea un oggetto PrintWriter per scrivere l'output su un file di testo chiamato "output.txt"
-            PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"));
-
-            File imgFile = new File("output\\grafo.png");
+            File imgFile = new File(PATH_ORIENTED_GRAPH_IMAGE);
 
             for (Cella vertice : grafo.vertexSet()) {
                 // Stampa il contenuto del vertice sia sulla console che nel file di testo
@@ -144,15 +137,11 @@ public class Grafo {
             }
 
             BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
-            ImageIO.write(image, "PNG", imgFile);
+            ImageIO.write(image, PNG, imgFile);
 
         } catch (IOException e) {
             // Gestisce eventuali eccezioni di IO (Input/Output) stampando il messaggio di errore sulla console
             System.out.println(e.getMessage());
-        } finally {
-            // Flusha e chiude il consoleWriter per assicurarsi che i dati siano correttamente scritti sulla console
-            consoleWriter.flush();
-            consoleWriter.close();
         }
     }
 }
