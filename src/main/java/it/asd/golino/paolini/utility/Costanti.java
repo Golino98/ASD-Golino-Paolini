@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Costanti {
     public static final int MOSSA_CARDINALE = 1;
-    public static final double DIAGONALE = Math.sqrt(2);
+    public static final double DIAGONALE = 1.414;
 
     public static final Font TEXT_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
     public static final Font BUTTON_FONT = new Font(Font.DIALOG, Font.PLAIN, 15);
