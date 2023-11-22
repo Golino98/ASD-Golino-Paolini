@@ -10,7 +10,6 @@ import it.asd.golino.paolini.utility.Costanti;
 import it.asd.golino.paolini.utility.StatoCelle;
 import org.jgrapht.Graph;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -83,8 +82,6 @@ public class Grafo {
         try (PrintWriter consoleWriter = new PrintWriter(System.out);
              PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"))) {
 
-            File imgFile = new File(PATH_ORIENTED_GRAPH_IMAGE);
-
             for (Cella vertice : grafo.vertexSet()) {
                 // Stampa il contenuto del vertice sia sulla console che nel file di testo
                 consoleWriter.format(Costanti.STAMPA_CELLA_GRAFO, vertice);
@@ -137,7 +134,15 @@ public class Grafo {
             }
 
             BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
-            ImageIO.write(image, PNG, imgFile);
+
+            // Salva l'immagine su disco
+            try {
+                File imgFile = new File(PATH_ORIENTED_GRAPH_IMAGE);
+                ImageIO.write(image, PNG, imgFile);
+            } catch (IOException e) {
+                System.out.println("Errore nella scrittura dell'immagine su disco: " + e.getMessage());
+            }
+
 
         } catch (IOException e) {
             // Gestisce eventuali eccezioni di IO (Input/Output) stampando il messaggio di errore sulla console
