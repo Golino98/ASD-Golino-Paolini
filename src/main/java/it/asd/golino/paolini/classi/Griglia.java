@@ -92,45 +92,48 @@ public class Griglia {
 
         while (numeroCelleDaOccupare > 0) {
 
-            int riga = rnd.nextInt(altezza);
-            int colonna = rnd.nextInt(larghezza);
+            int riga;
+            int colonna;
+            ArrayList<Cella> disponibili = new ArrayList<>();
+            //Prima di selezionare questa casuale, dovrei verificare se sia libera o meno e che non sia vicina cardinalmente ad altre celle
+            do {
+                riga = rnd.nextInt(altezza);
+                colonna = rnd.nextInt(larghezza);
+            } while(griglia[riga][colonna].getCellStatus()!=StatoCelle.LIBERA.getValore() && !senzaVicini(griglia[riga][colonna]));
 
-            cambiaStatoCella(griglia[riga][colonna]);
+            cambiaStatoCella(griglia[riga][colonna]); //Cambio lo stato della cella
 
-            int nextCell = rnd.nextInt(9);
-            switch (nextCell) {
-                case 1:
-                    muoviNord(riga, colonna);
-                    muoviOvest(riga, colonna);
-                    break;
-                case 2:
-                    muoviNord(riga, colonna);
-                    break;
-                case 3:
-                    muoviNord(riga, colonna);
-                    muoviEast(riga, colonna);
-                    break;
-                case 4:
-                    muoviEast(riga, colonna);
-                    break;
-                case 5:
-                    muoviEast(riga, colonna);
-                    muoviSud(riga, colonna);
-                    break;
-                case 6:
-                    muoviSud(riga, colonna);
-                    break;
-                case 7:
-                    muoviSud(riga, colonna);
-                    muoviOvest(riga, colonna);
-                    break;
-                case 8:
-                    muoviOvest(riga, colonna);
-                    break;
+            int counter = rnd.nextInt(agglomerazione);
+             //probabilità che abbia un'agglomerazione da 1 a agglomerazione.
+            boolean ok = true;
+
+            while(counter>0 && ok){
+                if(senzaVicini(griglia[riga+1][colonna]))
+                    disponibili.add(griglia[riga+1][colonna]);
+                else if(senzaVicini(griglia[riga][colonna +1]))
+                    disponibili.add(griglia[riga][colonna +1]);
+                else if(senzaVicini(griglia[riga][colonna-1]))
+                    disponibili.add(griglia[riga][colonna-1]);
+                else if(senzaVicini(griglia[riga-1][colonna]))
+                    disponibili.add(griglia[riga-1][colonna]);
+
+
             }
+
         }
     }
 
+    public boolean senzaVicini(Cella x){
+        if(griglia[x.getRiga()+1][x.getColonna()].getCellStatus()!=StatoCelle.LIBERA.getValore())
+            return false;
+        else if (griglia[x.getRiga()][x.getColonna()+1].getCellStatus()!=StatoCelle.LIBERA.getValore())
+            return false;
+        else if (griglia[x.getRiga()-1][x.getColonna()].getCellStatus()!=StatoCelle.LIBERA.getValore())
+            return false;
+        else if (griglia[x.getRiga()][x.getColonna()-1].getCellStatus()!=StatoCelle.LIBERA.getValore())
+            return false;
+        else return true;
+    }
     public void muoviNord(int riga, int colonna) {
         if (riga < 1) return;
         cambiaStatoCella(griglia[riga - 1][colonna]);
