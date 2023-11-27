@@ -93,39 +93,44 @@ public class Griglia {
 
             int riga;
             int colonna;
+
+            // Lista nella quale vengono inserite le celle adiacenti che sono dei validi vicini per l'agglomerato
             ArrayList<Cella> disponibili = new ArrayList<>();
+
+            // Lista nella quale vengono inserite le celle che devono essere colorate (e quindi rese non attraversabili)
             ArrayList<Cella> daColorare = new ArrayList<>();
-            //Prima di selezionare questa casuale, dovrei verificare se sia libera o meno e che non sia vicina cardinalmente ad altre celle
+
+            // Prima di selezionare questa casuale, dovrei verificare se sia libera o meno e che non sia vicina cardinalmente ad altre celle
             do {
                 riga = rnd.nextInt(altezza);
                 colonna = rnd.nextInt(larghezza);
             } while (griglia[riga][colonna].getCellStatus() != StatoCelle.LIBERA.getValore() || !senzaVicini(griglia[riga][colonna]));
 
-            daColorare.add(griglia[riga][colonna]); //Cambio lo stato della cella
+            // Aggiungo la cella alla lista delle celle da colorare
+            daColorare.add(griglia[riga][colonna]);
 
+            // Valore intero nell'intervallo [0,agglomerazione[. Indica quante celle aggiungere dalla cella selezionata per creare l'agglomerato
             int counter = rnd.nextInt(agglomerazione);
-            //probabilità che abbia un'agglomerazione da 1 a agglomerazione.
+
             boolean ok = true;
 
             while (counter > 0 && ok) {
-                if (riga + 1 < altezza) {
-                    if (senzaVicini(griglia[riga + 1][colonna]))
-                        disponibili.add(griglia[riga + 1][colonna]);
+                if (riga + 1 < altezza)
+                {
+                    senzaVicini(griglia[riga+1][colonna], disponibili);
                 }
                 if (colonna + 1 < larghezza) {
-                    if (senzaVicini(griglia[riga][colonna + 1]))
-                        disponibili.add(griglia[riga][colonna + 1]);
+                    senzaVicini(griglia[riga][colonna+1],disponibili);
                 }
-                if (colonna - 1 > 0) {
-                    if (senzaVicini(griglia[riga][colonna - 1]))
-                        disponibili.add(griglia[riga][colonna - 1]);
+                if (colonna - 1 > 0)
+                {
+                    senzaVicini(griglia[riga][colonna-1], disponibili);
                 }
                 if (riga - 1 > 0) {
-                    if (senzaVicini(griglia[riga - 1][colonna]))
-                        disponibili.add(griglia[riga - 1][colonna]);
+                    senzaVicini(griglia[riga-1][colonna],disponibili);
                 }
 
-                if (disponibili.size() == 0) {
+                if (disponibili.isEmpty()) {
                     ok = false;
                 } else {
                     Cella cella = sceltaRandom(disponibili);
@@ -136,6 +141,7 @@ public class Griglia {
                 }
             }
 
+            // Ciclo che permette di colorare le celle
             for (Cella cella : daColorare) {
                 cambiaStatoCella(cella);
                 numeroCelleDaOccupare--;
@@ -144,20 +150,63 @@ public class Griglia {
         }
     }
 
+    /**
+     * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
+     * @param x -> cella sulla quale effettuare il controllo
+     * @return true se ha tutti i vicini disponibili, falso altrimenti
+     */
     public boolean senzaVicini(Cella x) {
+        // Controllo se non sono su un bordo
         if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
             return false;
+
+        // Controllo la riga sotto
         else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
             return false;
+
+        // Controllo la riga a destra
         else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA.getValore())
             return false;
+
+        // Controllo la riga sopra
         else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
             return false;
-        else if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() != StatoCelle.LIBERA.getValore())
-            return false;
-        else return true;
+
+        // Controllo la colonna a sinistra
+        else return griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA.getValore();
     }
 
+    /**
+     * Metodo che presa una cella, verifica se i vicini sono delle possibili celle per gli agglomerati
+     * @param x -> cella sulla quale effettuare il controllo
+     * @param disponibili -> lista delle celle scelte per gli agglomerati
+     */
+    public void senzaVicini(Cella x, ArrayList<Cella> disponibili) {
+        // Controllo se non sono su un bordo
+        if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
+            return;
+
+            // Controllo la riga sotto
+        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+            return;
+
+            // Controllo la riga a destra
+        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA.getValore())
+            return;
+
+            // Controllo la riga sopra
+        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+            return;
+
+            // Controllo la colonna a sinistra
+        else disponibili.add(x);
+    }
+
+    /**
+     *
+     * @param lista -> arrayList che permette di selezionare un elemento casuale da essa
+     * @return -> l'elemento casuale della lista (e lo rimuove da essa)
+     */
     public Cella sceltaRandom(ArrayList<Cella> lista) {
         int random = rnd.nextInt(lista.size());
         return lista.remove(random);
