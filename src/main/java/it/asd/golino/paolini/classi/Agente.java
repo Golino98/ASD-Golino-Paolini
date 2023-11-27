@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Random;
 
 public class Agente {
+
     private Cella cellaStart, cellaGoal;
     private int indice;
 
