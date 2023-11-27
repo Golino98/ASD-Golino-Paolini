@@ -20,17 +20,14 @@ public class Griglia {
     private final int agenti;
     private final Random rnd = new Random();
 
-    public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti)
-    {
+    public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti) {
         this.altezza = altezza;
         this.larghezza = larghezza;
 
         this.griglia = new Cella[altezza][larghezza];
-        for(int i = 0; i < altezza; i++)
-        {
-            for(int j = 0; j < larghezza; j++)
-            {
-                griglia[i][j] = new Cella(i,j, StatoCelle.LIBERA.getValore());
+        for (int i = 0; i < altezza; i++) {
+            for (int j = 0; j < larghezza; j++) {
+                griglia[i][j] = new Cella(i, j, StatoCelle.LIBERA.getValore());
             }
         }
 
@@ -42,7 +39,9 @@ public class Griglia {
         generateObstacles();
     }
 
-    public Cella[][] getGriglia() {return griglia;}
+    public Cella[][] getGriglia() {
+        return griglia;
+    }
 
     public int getAltezza() {
         return altezza;
@@ -95,63 +94,73 @@ public class Griglia {
             int riga;
             int colonna;
             ArrayList<Cella> disponibili = new ArrayList<>();
+            ArrayList<Cella> daColorare = new ArrayList<>();
             //Prima di selezionare questa casuale, dovrei verificare se sia libera o meno e che non sia vicina cardinalmente ad altre celle
             do {
                 riga = rnd.nextInt(altezza);
                 colonna = rnd.nextInt(larghezza);
-            } while(griglia[riga][colonna].getCellStatus()!=StatoCelle.LIBERA.getValore() && !senzaVicini(griglia[riga][colonna]));
+            } while (griglia[riga][colonna].getCellStatus() != StatoCelle.LIBERA.getValore() && !senzaVicini(griglia[riga][colonna]));
 
-            cambiaStatoCella(griglia[riga][colonna]); //Cambio lo stato della cella
+            daColorare.add(griglia[riga][colonna]); //Cambio lo stato della cella
 
             int counter = rnd.nextInt(agglomerazione);
-             //probabilità che abbia un'agglomerazione da 1 a agglomerazione.
+            //probabilità che abbia un'agglomerazione da 1 a agglomerazione.
             boolean ok = true;
 
-            while(counter>0 && ok){
-                if(senzaVicini(griglia[riga+1][colonna]))
-                    disponibili.add(griglia[riga+1][colonna]);
-                else if(senzaVicini(griglia[riga][colonna +1]))
-                    disponibili.add(griglia[riga][colonna +1]);
-                else if(senzaVicini(griglia[riga][colonna-1]))
-                    disponibili.add(griglia[riga][colonna-1]);
-                else if(senzaVicini(griglia[riga-1][colonna]))
-                    disponibili.add(griglia[riga-1][colonna]);
+            while (counter > 0 && ok) {
+                if (riga + 1 < altezza) {
+                    if (senzaVicini(griglia[riga + 1][colonna]))
+                        disponibili.add(griglia[riga + 1][colonna]);
+                }
+                if (colonna + 1 < larghezza) {
+                    if (senzaVicini(griglia[riga][colonna + 1]))
+                        disponibili.add(griglia[riga][colonna + 1]);
+                }
+                if (colonna - 1 > 0) {
+                    if (senzaVicini(griglia[riga][colonna - 1]))
+                        disponibili.add(griglia[riga][colonna - 1]);
+                }
+                if (riga - 1 > 0) {
+                    if (senzaVicini(griglia[riga - 1][colonna]))
+                        disponibili.add(griglia[riga - 1][colonna]);
+                }
 
+                if (disponibili.size() == 0) {
+                    ok = false;
+                } else {
+                    Cella cella = sceltaRandom(disponibili);
+                    riga = cella.getRiga();
+                    colonna = cella.getColonna();
+                    daColorare.add(griglia[riga][colonna]);
+                    counter--;
+                }
+            }
 
+            for (Cella cella : daColorare) {
+                cambiaStatoCella(cella);
+                numeroCelleDaOccupare--;
             }
 
         }
     }
 
-    public boolean senzaVicini(Cella x){
-        if(griglia[x.getRiga()+1][x.getColonna()].getCellStatus()!=StatoCelle.LIBERA.getValore())
+    public boolean senzaVicini(Cella x) {
+        if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
             return false;
-        else if (griglia[x.getRiga()][x.getColonna()+1].getCellStatus()!=StatoCelle.LIBERA.getValore())
+        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
             return false;
-        else if (griglia[x.getRiga()-1][x.getColonna()].getCellStatus()!=StatoCelle.LIBERA.getValore())
+        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA.getValore())
             return false;
-        else if (griglia[x.getRiga()][x.getColonna()-1].getCellStatus()!=StatoCelle.LIBERA.getValore())
+        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+            return false;
+        else if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() != StatoCelle.LIBERA.getValore())
             return false;
         else return true;
     }
-    public void muoviNord(int riga, int colonna) {
-        if (riga < 1) return;
-        cambiaStatoCella(griglia[riga - 1][colonna]);
-    }
 
-    public void muoviEast(int riga, int colonna) {
-        if (colonna >= this.larghezza - 1) return;
-        cambiaStatoCella(griglia[riga][colonna + 1]);
-    }
-
-    public void muoviSud(int riga, int colonna) {
-        if (riga >= this.altezza - 1) return;
-        cambiaStatoCella(griglia[riga + 1][colonna]);
-    }
-
-    public void muoviOvest(int riga, int colonna) {
-        if (colonna < 1) return;
-        cambiaStatoCella(griglia[riga][colonna - 1]);
+    public Cella sceltaRandom(ArrayList<Cella> lista) {
+        int random = rnd.nextInt(lista.size());
+        return lista.remove(random);
     }
 
     /**
@@ -159,11 +168,9 @@ public class Griglia {
      *
      * @param cella -> cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
      */
-    private void cambiaStatoCella(Cella cella)
-    {
+    private void cambiaStatoCella(Cella cella) {
         if (cella.getCellStatus() == StatoCelle.LIBERA.getValore()) {
             cella.setStatus(StatoCelle.NON_ATTRAVERSABILE.getValore());
-            numeroCelleDaOccupare--;
         }
     }
 
@@ -177,8 +184,7 @@ public class Griglia {
      * @param statoFinale   -> valore rappresentante lo stato finale della cella
      * @return -> true se viene effettuato il cambio di stato, false altrimenti.
      */
-    private boolean cambiaStatoCella(int riga, int colonna, int statoIniziale, int statoFinale)
-    {
+    private boolean cambiaStatoCella(int riga, int colonna, int statoIniziale, int statoFinale) {
         if (griglia[riga][colonna].getCellStatus() == statoIniziale) {
             griglia[riga][colonna].setStatus(statoFinale);
             return true;
