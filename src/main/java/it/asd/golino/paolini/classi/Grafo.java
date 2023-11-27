@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static it.asd.golino.paolini.utility.Costanti.PATH_ORIENTED_GRAPH_IMAGE;
@@ -78,8 +81,22 @@ public class Grafo {
 
     // Metodo per stampare il grafo
     public static void stampaGrafo() {
+
+        // Verifica se la cartella "output" esiste, altrimenti la crea
+        Path outputFolderPath = Paths.get("output");
+        if (!Files.exists(outputFolderPath)) {
+            try {
+                Files.createDirectories(outputFolderPath);
+                System.out.println("Cartella 'output' creata con successo.");
+            } catch (IOException e) {
+                System.out.println("Errore nella creazione della cartella 'output': " + e.getMessage());
+                return; // Esci dal metodo se si verifica un errore nella creazione della cartella
+            }
+        }
+
         // Crea un oggetto PrintWriter per scrivere l'output sulla console
         try (PrintWriter consoleWriter = new PrintWriter(System.out);
+
              PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"))) {
 
             for (Cella vertice : grafo.vertexSet()) {
