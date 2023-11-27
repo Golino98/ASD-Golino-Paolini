@@ -99,7 +99,7 @@ public class Griglia {
             do {
                 riga = rnd.nextInt(altezza);
                 colonna = rnd.nextInt(larghezza);
-            } while (griglia[riga][colonna].getCellStatus() != StatoCelle.LIBERA.getValore() && !senzaVicini(griglia[riga][colonna]));
+            } while (griglia[riga][colonna].getCellStatus() != StatoCelle.LIBERA.getValore() || !senzaVicini(griglia[riga][colonna]));
 
             daColorare.add(griglia[riga][colonna]); //Cambio lo stato della cella
 
