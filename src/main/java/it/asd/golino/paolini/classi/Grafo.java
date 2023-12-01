@@ -77,6 +77,13 @@ public class Grafo {
                 }
             }
         }
+
+        // Creazione dei nodi cappio con sè stessi
+        for(Cella vertex : grafo.vertexSet())
+        {
+            grafo.addEdge(vertex, vertex);
+            grafo.setEdgeWeight(vertex,vertex, Costanti.MOSSA_CARDINALE);
+        }
     }
 
     // Metodo per stampare il grafo
