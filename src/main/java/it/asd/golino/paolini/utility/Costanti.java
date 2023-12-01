@@ -9,6 +9,10 @@ public class Costanti {
     public static final Font TEXT_FONT = new Font(Font.DIALOG, Font.PLAIN, 18);
     public static final Font BUTTON_FONT = new Font(Font.DIALOG, Font.PLAIN, 15);
 
+    public static final String OUT_PATH = "output";
+    public static final String FOLDER_CREATION_SUCCESS = "Cartella di creata con successo.";
+    public static final String FOLDER_CREATION_ERROR = "Errore nella creazione della cartella 'output': ";
+
     public static final String ERRORE = "Errore";
     public static final String ERRORE_CONVERSIONE_NUMERO = "Errore: inserisci valori numerici validi.";
     public static final String ERRORE_NUMERO_NEGATIVO = "Errore: i valori devono essere tutti positivi.";

@@ -90,13 +90,13 @@ public class Grafo {
     public static void stampaGrafo() {
 
         // Verifica se la cartella "output" esiste, altrimenti la crea
-        Path outputFolderPath = Paths.get("output");
+        Path outputFolderPath = Paths.get(Costanti.OUT_PATH);
         if (!Files.exists(outputFolderPath)) {
             try {
                 Files.createDirectories(outputFolderPath);
-                System.out.println("Cartella 'output' creata con successo.");
+                System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
             } catch (IOException e) {
-                System.out.println("Errore nella creazione della cartella 'output': " + e.getMessage());
+                System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
                 return; // Esci dal metodo se si verifica un errore nella creazione della cartella
             }
         }
