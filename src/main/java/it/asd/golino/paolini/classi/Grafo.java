@@ -12,6 +12,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.alg.shortestpath.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,6 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+
+
 import static it.asd.golino.paolini.utility.Costanti.PATH_ORIENTED_GRAPH_IMAGE;
 import static it.asd.golino.paolini.utility.Costanti.PNG;
 
@@ -34,7 +37,9 @@ public class Grafo {
     private static final Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
     // Metodo per creare il grafo
-    public static void creaGrafo() {
+    public static void creaGrafo()
+    {
+
         Vertice.getVertici().forEach(grafo::addVertex);
         grafo.vertexSet().forEach(Grafo::creaConnessioni);
         stampaGrafo();
@@ -79,10 +84,9 @@ public class Grafo {
         }
 
         // Creazione dei nodi cappio con sè stessi
-        for(Cella vertex : grafo.vertexSet())
-        {
+        for (Cella vertex : grafo.vertexSet()) {
             grafo.addEdge(vertex, vertex);
-            grafo.setEdgeWeight(vertex,vertex, Costanti.MOSSA_CARDINALE);
+            grafo.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
     }
 
@@ -91,20 +95,15 @@ public class Grafo {
 
         // Verifica se la cartella "output" esiste, altrimenti la crea
         Path outputFolderPath = Paths.get(Costanti.OUT_PATH);
-        if (!Files.exists(outputFolderPath)) {
-            try {
-                Files.createDirectories(outputFolderPath);
-                System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
-            } catch (IOException e) {
-                System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
-                return; // Esci dal metodo se si verifica un errore nella creazione della cartella
-            }
-        }
+        Path outputGrafi = Paths.get(Costanti.OUT_PATH + "\\grafi");
+
+        creaCartella(outputFolderPath);
+        creaCartella(outputGrafi);
 
         // Crea un oggetto PrintWriter per scrivere l'output sulla console
         try (PrintWriter consoleWriter = new PrintWriter(System.out);
 
-             PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"))) {
+             PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafi\\grafo.txt"))) {
 
             for (Cella vertice : grafo.vertexSet()) {
                 // Stampa il contenuto del vertice sia sulla console che nel file di testo
@@ -172,5 +171,20 @@ public class Grafo {
             // Gestisce eventuali eccezioni di IO (Input/Output) stampando il messaggio di errore sulla console
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void creaCartella(Path cartella) {
+
+        if (!Files.exists(cartella)) {
+            try {
+                Files.createDirectories(cartella);
+
+                System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
+            } catch (IOException e) {
+                System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
+                return; // Esci dal metodo se si verifica un errore nella creazione della cartella
+            }
+        }
+
     }
 }

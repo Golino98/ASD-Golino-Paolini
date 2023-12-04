@@ -5,12 +5,11 @@ import java.util.Random;
 
 public class Agente {
 
-    private Cella cellaStart, cellaGoal;
-    private int indice;
+    private final Cella cellaStart;
+    private final Cella cellaGoal;
+    private final int indice;
 
-    // Imposta un colore casuale per lo sfondo
-    private Random rand = new Random();
-    private Color randomColor;
+    private final Color randomColor;
 
     private static int i = 1;
 
@@ -18,6 +17,8 @@ public class Agente {
         this.cellaStart = cellaStart;
         this.cellaGoal = cellaGoal;
         this.indice = i++;
+        // Imposta un colore casuale per lo sfondo
+        Random rand = new Random();
         this.randomColor = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
     }
 
