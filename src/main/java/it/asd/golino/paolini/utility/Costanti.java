@@ -23,6 +23,6 @@ public class Costanti {
     public static final String STAMPA_PESO_GRAFO =  "[%s - %.3f];  ";
 
     public static final String PNG = "PNG";
-    public static final String PATH_ORIENTED_GRAPH_IMAGE = "output\\grafo_dei_pesi.png";
+    public static final String PATH_ORIENTED_GRAPH_IMAGE = "output\\grafi\\grafo_dei_pesi.png";
 
 }

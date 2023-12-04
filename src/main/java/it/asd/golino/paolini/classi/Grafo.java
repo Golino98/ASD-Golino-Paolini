@@ -79,10 +79,9 @@ public class Grafo {
         }
 
         // Creazione dei nodi cappio con sè stessi
-        for(Cella vertex : grafo.vertexSet())
-        {
+        for (Cella vertex : grafo.vertexSet()) {
             grafo.addEdge(vertex, vertex);
-            grafo.setEdgeWeight(vertex,vertex, Costanti.MOSSA_CARDINALE);
+            grafo.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
     }
 
@@ -91,20 +90,15 @@ public class Grafo {
 
         // Verifica se la cartella "output" esiste, altrimenti la crea
         Path outputFolderPath = Paths.get(Costanti.OUT_PATH);
-        if (!Files.exists(outputFolderPath)) {
-            try {
-                Files.createDirectories(outputFolderPath);
-                System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
-            } catch (IOException e) {
-                System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
-                return; // Esci dal metodo se si verifica un errore nella creazione della cartella
-            }
-        }
+        Path outputGrafi = Paths.get(Costanti.OUT_PATH + "\\grafi");
+
+        creaCartella(outputFolderPath);
+        creaCartella(outputGrafi);
 
         // Crea un oggetto PrintWriter per scrivere l'output sulla console
         try (PrintWriter consoleWriter = new PrintWriter(System.out);
 
-             PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafo.txt"))) {
+             PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafi\\grafo.txt"))) {
 
             for (Cella vertice : grafo.vertexSet()) {
                 // Stampa il contenuto del vertice sia sulla console che nel file di testo
@@ -172,5 +166,20 @@ public class Grafo {
             // Gestisce eventuali eccezioni di IO (Input/Output) stampando il messaggio di errore sulla console
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void creaCartella(Path cartella) {
+
+        if (!Files.exists(cartella)) {
+            try {
+                Files.createDirectories(cartella);
+
+                System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
+            } catch (IOException e) {
+                System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
+                return; // Esci dal metodo se si verifica un errore nella creazione della cartella
+            }
+        }
+
     }
 }
