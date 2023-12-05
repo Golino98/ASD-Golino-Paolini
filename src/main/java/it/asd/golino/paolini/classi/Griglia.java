@@ -185,7 +185,7 @@ public class Griglia {
 
         // Controllo la colonna a sinistra
         if (!(x.getColonna() - 1 < 0)) {
-            if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA) return false;
+            if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() != StatoCelle.LIBERA) return false;
         }
         return true;
     }
