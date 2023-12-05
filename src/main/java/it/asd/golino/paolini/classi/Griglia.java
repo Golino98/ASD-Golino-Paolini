@@ -154,25 +154,37 @@ public class Griglia {
      * @param x -> cella sulla quale effettuare il controllo
      * @return true se ha tutti i vicini disponibili, falso altrimenti
      */
+    /**
+     * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
+     *
+     * @param x -> cella sulla quale effettuare il controllo
+     * @return true se ha tutti i vicini disponibili, falso altrimenti
+     */
     public boolean senzaVicini(Cella x) {
-        // Controllo se non sono su un bordo
-        if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
-            return false;
 
-            // Controllo la riga sotto
-        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
-            return false;
+        // Controllo la riga sotto
+        if (!(x.getRiga() + 1 >= altezza)) {
+            if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
+                return false;
+        }
 
-            // Controllo la riga a destra
-        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
-            return false;
+        // Controllo la riga a destra
+        if (!(x.getColonna() + 1 >= larghezza)) {
+            if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
+                return false;
+        }
 
-            // Controllo la riga sopra
-        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
-            return false;
+        // Controllo la riga sopra
+        if (!(x.getRiga() - 1 < 0)) {
+            if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
+                return false;
+        }
 
-            // Controllo la colonna a sinistra
-        else return griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA;
+        // Controllo la colonna a sinistra
+        if (!(x.getColonna() - 1 < 0)) {
+            if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA) return false;
+        }
+        return true;
     }
 
     /**
