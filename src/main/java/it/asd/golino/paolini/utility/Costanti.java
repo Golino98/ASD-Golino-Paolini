@@ -16,6 +16,9 @@ public class Costanti {
     public static final String ERRORE = "Errore";
     public static final String ERRORE_CONVERSIONE_NUMERO = "Errore: inserisci valori numerici validi.";
     public static final String ERRORE_NUMERO_NEGATIVO = "Errore: i valori devono essere tutti positivi.";
+    public static final String ERRORE_GRIGLIA_NON_COMPLETA = "Non è stato possibile creare una griglia con i parametri richiesti. Viene visualizzata la griglia che più si avvicina a quanto inserito.";
+    public static final String ERRORE_NUMERO_CELLE = "Il numero delle celle non attraversabili è in conflitto con il numero degli agenti.";
+    public static final String ERRORE_PERCENTUALE_MASSIMA= "La percentuale non può essere superiore al 100%";
 
     public static final String NOME_CELLA = "(%d , %d)";
 

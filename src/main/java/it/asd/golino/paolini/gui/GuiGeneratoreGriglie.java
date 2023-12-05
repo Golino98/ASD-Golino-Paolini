@@ -1,6 +1,7 @@
 package it.asd.golino.paolini.gui;
 
 import it.asd.golino.paolini.classi.Griglia;
+import it.asd.golino.paolini.utility.Calcolatore;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -65,9 +66,10 @@ public class GuiGeneratoreGriglie extends JFrame {
             int agglomerazione = Integer.parseInt(fattoreAgglomerazioneField.getText());
             int agenti = Integer.parseInt(numeroAgentiField.getText());
 
+            // TODO: aggiungere controllo iniziale numero celle e numero agenti
+
             // Controllo sulla positività degli input
-            if (altezza <= 0 || larghezza <= 0 || percentage < 0 || percentage > 100 || agglomerazione <= 0 || agenti < 1)
-            {
+            if (altezza <= 0 || larghezza <= 0 || percentage < 0 || agglomerazione <= 0 || agenti < 1) {
                 showErrorDialog(ERRORE_NUMERO_NEGATIVO);
                 if (altezza <= 0) {
                     resetTextField(altezzaField);
@@ -75,19 +77,26 @@ public class GuiGeneratoreGriglie extends JFrame {
                     resetTextField(larghezzaField);
                 } else if (percentage < 0 || percentage > 100) {
                     resetTextField(percentualeCelleTraversabiliField);
-                } else if (agglomerazione <= 0){
+                } else if (agglomerazione <= 0) {
                     resetTextField(fattoreAgglomerazioneField);
-                }else
-                {
+                } else {
                     resetTextField(numeroAgentiField);
                 }
+            } else if (percentage > 100)
+            {
+                showErrorDialog(ERRORE_PERCENTUALE_MASSIMA);
+                resetTextField(percentualeCelleTraversabiliField);
+
+            } else if (Calcolatore.calcolaNumeroCellePercentuale(altezza, larghezza, percentage) > altezza * larghezza - agenti * 2 || 2 * agenti > altezza * larghezza) {
+                showErrorDialog(ERRORE_NUMERO_CELLE);
+                resetTextField(percentualeCelleTraversabiliField);
+                resetTextField(numeroAgentiField);
             } else {
                 dispose();
                 Griglia griglia = new Griglia(altezza, larghezza, percentage, agglomerazione, agenti);
                 GeneratoreGriglie.stampaGriglia(griglia);
             }
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             showErrorDialog(ERRORE_CONVERSIONE_NUMERO);
         }
     }
@@ -116,7 +125,7 @@ public class GuiGeneratoreGriglie extends JFrame {
         textField.setText("");
     }
 
-    private void showErrorDialog(String errorMessage) {
+    public void showErrorDialog(String errorMessage) {
         // Mostra una finestra di dialogo con il messaggio di errore
         JLabel erroreLabel = new JLabel(errorMessage);
         erroreLabel.setFont(BUTTON_FONT);
