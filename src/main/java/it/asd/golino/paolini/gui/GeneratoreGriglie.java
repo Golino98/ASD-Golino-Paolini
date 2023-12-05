@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GeneratoreGriglie extends JFrame {
 
@@ -18,8 +19,11 @@ public class GeneratoreGriglie extends JFrame {
 
         Cella[][] grid = griglia.getGriglia();
 
-        //rendere array
-        ArrayList<Agente> listaAgenti = griglia.getListaAgenti();
+        ArrayList<Agente> listaAgenti = new ArrayList<>();
+        for(var agente : griglia.getListaAgenti())
+        {
+            listaAgenti.add(agente);
+        }
 
         JFrame dialogGrid = new JFrame("Griglia");
         dialogGrid.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Chiudi solo questa finestra
