@@ -116,18 +116,21 @@ public class Griglia {
 
             while (counter > 0 && ok) {
                 if (riga + 1 < altezza) {
-                    senzaVicini(griglia[riga + 1][colonna], disponibili);
+                    if (senzaVicini(griglia[riga + 1][colonna]))
+                        disponibili.add(griglia[riga + 1][colonna]);
                 }
                 if (colonna + 1 < larghezza) {
-                    senzaVicini(griglia[riga][colonna + 1], disponibili);
+                    if (senzaVicini(griglia[riga][colonna + 1]))
+                        disponibili.add(griglia[riga][colonna + 1]);
                 }
                 if (colonna - 1 > 0) {
-                    senzaVicini(griglia[riga][colonna - 1], disponibili);
+                    if (senzaVicini(griglia[riga][colonna - 1]))
+                        disponibili.add(griglia[riga][colonna - 1]);
                 }
                 if (riga - 1 > 0) {
-                    senzaVicini(griglia[riga - 1][colonna], disponibili);
+                    if (senzaVicini(griglia[riga - 1][colonna]))
+                        disponibili.add(griglia[riga - 1][colonna]);
                 }
-
                 if (disponibili.isEmpty()) {
                     ok = false;
                 } else {
