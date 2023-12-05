@@ -27,7 +27,7 @@ public class Griglia {
         this.griglia = new Cella[altezza][larghezza];
         for (int i = 0; i < altezza; i++) {
             for (int j = 0; j < larghezza; j++) {
-                griglia[i][j] = new Cella(i, j, StatoCelle.LIBERA.getValore());
+                griglia[i][j] = new Cella(i, j, StatoCelle.LIBERA);
             }
         }
 
@@ -80,7 +80,7 @@ public class Griglia {
                 foundGoal = cambiaStatoCella(rigaGoal, colonnaGoal, StatoCelle.LIBERA.getValore(), StatoCelle.AGENTE_GOAL.getValore());
             }
 
-            listaAgenti.add(new Agente(new Cella(rigaStart, colonnaStart, StatoCelle.AGENTE_START.getValore()), new Cella(rigaGoal, colonnaGoal, StatoCelle.AGENTE_GOAL.getValore())));
+            listaAgenti.add(new Agente(new Cella(rigaStart, colonnaStart, StatoCelle.AGENTE_START), new Cella(rigaGoal, colonnaGoal, StatoCelle.AGENTE_GOAL)));
         }
     }
 
@@ -104,7 +104,7 @@ public class Griglia {
             do {
                 riga = rnd.nextInt(altezza);
                 colonna = rnd.nextInt(larghezza);
-            } while (griglia[riga][colonna].getCellStatus() != StatoCelle.LIBERA.getValore() || !senzaVicini(griglia[riga][colonna]));
+            } while (griglia[riga][colonna].getCellStatus() != StatoCelle.LIBERA || !senzaVicini(griglia[riga][colonna]));
 
             // Aggiungo la cella alla lista delle celle da colorare
             daColorare.add(griglia[riga][colonna]);
@@ -115,19 +115,17 @@ public class Griglia {
             boolean ok = true;
 
             while (counter > 0 && ok) {
-                if (riga + 1 < altezza)
-                {
-                    senzaVicini(griglia[riga+1][colonna], disponibili);
+                if (riga + 1 < altezza) {
+                    senzaVicini(griglia[riga + 1][colonna], disponibili);
                 }
                 if (colonna + 1 < larghezza) {
-                    senzaVicini(griglia[riga][colonna+1],disponibili);
+                    senzaVicini(griglia[riga][colonna + 1], disponibili);
                 }
-                if (colonna - 1 > 0)
-                {
-                    senzaVicini(griglia[riga][colonna-1], disponibili);
+                if (colonna - 1 > 0) {
+                    senzaVicini(griglia[riga][colonna - 1], disponibili);
                 }
                 if (riga - 1 > 0) {
-                    senzaVicini(griglia[riga-1][colonna],disponibili);
+                    senzaVicini(griglia[riga - 1][colonna], disponibili);
                 }
 
                 if (disponibili.isEmpty()) {
@@ -152,6 +150,7 @@ public class Griglia {
 
     /**
      * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
+     *
      * @param x -> cella sulla quale effettuare il controllo
      * @return true se ha tutti i vicini disponibili, falso altrimenti
      */
@@ -160,25 +159,26 @@ public class Griglia {
         if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
             return false;
 
-        // Controllo la riga sotto
-        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+            // Controllo la riga sotto
+        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
             return false;
 
-        // Controllo la riga a destra
-        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA.getValore())
+            // Controllo la riga a destra
+        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
             return false;
 
-        // Controllo la riga sopra
-        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+            // Controllo la riga sopra
+        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
             return false;
 
-        // Controllo la colonna a sinistra
-        else return griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA.getValore();
+            // Controllo la colonna a sinistra
+        else return griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA;
     }
 
     /**
      * Metodo che presa una cella, verifica se i vicini sono delle possibili celle per gli agglomerati
-     * @param x -> cella sulla quale effettuare il controllo
+     *
+     * @param x           -> cella sulla quale effettuare il controllo
      * @param disponibili -> lista delle celle scelte per gli agglomerati
      */
     public void senzaVicini(Cella x, ArrayList<Cella> disponibili) {
@@ -187,15 +187,15 @@ public class Griglia {
             return;
 
             // Controllo la riga sotto
-        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
             return;
 
             // Controllo la riga a destra
-        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA.getValore())
+        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
             return;
 
             // Controllo la riga sopra
-        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA.getValore())
+        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
             return;
 
             // Controllo la colonna a sinistra
@@ -203,7 +203,6 @@ public class Griglia {
     }
 
     /**
-     *
      * @param lista -> arrayList che permette di selezionare un elemento casuale da essa
      * @return -> l'elemento casuale della lista (e lo rimuove da essa)
      */
@@ -218,8 +217,8 @@ public class Griglia {
      * @param cella -> cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
      */
     private void cambiaStatoCella(Cella cella) {
-        if (cella.getCellStatus() == StatoCelle.LIBERA.getValore()) {
-            cella.setStatus(StatoCelle.NON_ATTRAVERSABILE.getValore());
+        if (cella.getCellStatus() == StatoCelle.LIBERA) {
+            cella.setStatus(StatoCelle.NON_ATTRAVERSABILE);
         }
     }
 
@@ -234,8 +233,9 @@ public class Griglia {
      * @return -> true se viene effettuato il cambio di stato, false altrimenti.
      */
     private boolean cambiaStatoCella(int riga, int colonna, int statoIniziale, int statoFinale) {
-        if (griglia[riga][colonna].getCellStatus() == statoIniziale) {
-            griglia[riga][colonna].setStatus(statoFinale);
+        if (griglia[riga][colonna].getCellStatus().getValore() == statoIniziale) {
+
+            griglia[riga][colonna].setStatus(StatoCelle.getStatoByValore(statoFinale));
             return true;
         }
         return false;

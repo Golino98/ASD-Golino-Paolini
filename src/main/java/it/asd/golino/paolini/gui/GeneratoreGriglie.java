@@ -38,7 +38,7 @@ public class GeneratoreGriglie extends JFrame {
                 cellPanel.setPreferredSize(new Dimension(60, 60));
                 cellPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                switch (cella.getCellStatus()) {
+                switch (cella.getCellStatus().getValore()) {
                     case 0:
                         Vertice.aggiungiVertice(cella);
                         break;

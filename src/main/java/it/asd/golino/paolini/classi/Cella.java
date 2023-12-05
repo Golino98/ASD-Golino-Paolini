@@ -1,10 +1,12 @@
 package it.asd.golino.paolini.classi;
 
+import it.asd.golino.paolini.utility.StatoCelle;
+
 import static it.asd.golino.paolini.utility.Costanti.NOME_CELLA;
 
 public class Cella {
     private int riga, colonna;
-    private int status;
+    private StatoCelle status;
 
     /**
      * Metodo costruttore
@@ -17,7 +19,7 @@ public class Cella {
      *               2 -> start per agent
      *               3 -> end per agent
      */
-    public Cella(int x, int y, int status) {
+    public Cella(int x, int y, StatoCelle status) {
         this.riga = x;
         this.colonna = y;
         this.status = status;
@@ -31,11 +33,11 @@ public class Cella {
         return colonna;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(StatoCelle status) {
         this.status = status;
     }
 
-    public int getCellStatus() {
+    public StatoCelle getCellStatus() {
         return status;
     }
 

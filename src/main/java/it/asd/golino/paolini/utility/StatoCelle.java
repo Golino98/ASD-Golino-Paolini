@@ -15,4 +15,14 @@ public enum StatoCelle {
     public int getValore() {
         return valore;
     }
+
+    public static StatoCelle getStatoByValore(int valoreControllo) {
+        return switch (valoreControllo) {
+            case 0 -> LIBERA;
+            case 1 -> NON_ATTRAVERSABILE;
+            case 2 -> AGENTE_START;
+            case 3 -> AGENTE_GOAL;
+            default -> null;
+        };
+    }
 }
