@@ -47,7 +47,7 @@ public class Grafo {
      * Metodo che permette di creare tutte le connessioni con celle libere adiacenti dato un vertice.
      * Sono gestiti anche i costi delle connessioni
      *
-     * @param vertice -> vertice sul quale creare le connessioni
+     * @param vertice vertice sul quale creare le connessioni
      */
     public static void creaConnessioni(Cella vertice) {
 
