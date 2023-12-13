@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
-
 import static it.asd.golino.paolini.utility.Costanti.PATH_ORIENTED_GRAPH_IMAGE;
 import static it.asd.golino.paolini.utility.Costanti.PNG;
 
@@ -36,16 +35,21 @@ public class Grafo {
     // Creazione di un grafo direzionato pesato utilizzando JGraphT
     private static final Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
-    // Metodo per creare il grafo
-    public static void creaGrafo()
-    {
-
+    /**
+     * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
+     */
+    public static void creaGrafo() {
         Vertice.getVertici().forEach(grafo::addVertex);
         grafo.vertexSet().forEach(Grafo::creaConnessioni);
         stampaGrafo();
     }
 
-    // Metodo per creare i collegamenti tra i vertici
+    /**
+     * Metodo che permette di creare tutte le connessioni con celle libere adiacenti dato un vertice.
+     * Sono gestiti anche i costi delle connessioni
+     *
+     * @param vertice -> vertice sul quale creare le connessioni
+     */
     public static void creaConnessioni(Cella vertice) {
 
         ArrayList<Cella> diagonali = new ArrayList<>();
@@ -90,7 +94,10 @@ public class Grafo {
         }
     }
 
-    // Metodo per stampare il grafo
+    /**
+     * Metodo che permette di stampare a console un grafo (ovvero i vertici e le connessioni)
+     * Inoltre scrive su un file di testo ciò che è stato scritto sulla console.
+     */
     public static void stampaGrafo() {
 
         // Verifica se la cartella "output" esiste, altrimenti la crea
@@ -166,23 +173,26 @@ public class Grafo {
                 System.out.println("Errore nella scrittura dell'immagine su disco: " + e.getMessage());
             }
 
-
         } catch (IOException e) {
             // Gestisce eventuali eccezioni di IO (Input/Output) stampando il messaggio di errore sulla console
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Funzione che permette la creazione di una cartella se non esistente.
+     * Verifica se esiste. Se non esiste la cartella la crea, altrimenti ritorna
+     *
+     * @param cartella -> path di una cartella da creare (post verifica di non esistenza)
+     */
     private static void creaCartella(Path cartella) {
 
         if (!Files.exists(cartella)) {
             try {
                 Files.createDirectories(cartella);
-
                 System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
             } catch (IOException e) {
                 System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
-                return; // Esci dal metodo se si verifica un errore nella creazione della cartella
             }
         }
 

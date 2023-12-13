@@ -34,7 +34,6 @@ public class GeneratoreGriglie extends JFrame {
         JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(altezza, larghezza));
 
-
         for (int i = 0; i < altezza; i++) {
             for (int j = 0; j < larghezza; j++) {
                 Cella cella = grid[i][j];
