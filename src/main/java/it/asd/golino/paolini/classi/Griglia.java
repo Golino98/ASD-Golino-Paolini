@@ -41,7 +41,6 @@ public class Griglia {
         this.agglomerazione = agglomerazione;
         this.agenti = agenti;
 
-
         generateObstacles();
         generateAgents();
 

@@ -9,6 +9,7 @@ import com.mxgraph.util.mxConstants;
 import it.asd.golino.paolini.utility.Costanti;
 import it.asd.golino.paolini.utility.StatoCelle;
 import org.jgrapht.Graph;
+import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -20,14 +21,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
-import static it.asd.golino.paolini.utility.Costanti.PATH_ORIENTED_GRAPH_IMAGE;
-import static it.asd.golino.paolini.utility.Costanti.PNG;
+import static it.asd.golino.paolini.utility.Costanti.*;
+import static it.asd.golino.paolini.utility.GestoreCartelle.creaCartella;
 
 public class Grafo {
 
@@ -40,7 +40,8 @@ public class Grafo {
     public static void creaGrafo() {
         Vertice.getVertici().forEach(grafo::addVertex);
         grafo.vertexSet().forEach(Grafo::creaConnessioni);
-        stampaGrafo();
+        stampaGrafo(grafo, "output\\grafi\\grafo.txt", PATH_ORIENTED_GRAPH_IMAGE);
+        creaAlberoCamminiMinimi();
     }
 
     /**
@@ -93,11 +94,33 @@ public class Grafo {
         }
     }
 
+    public static void creaAlberoCamminiMinimi() {
+        KruskalMinimumSpanningTree<Cella, DefaultWeightedEdge> kmst = new KruskalMinimumSpanningTree<>(grafo);
+        var spanningTree = kmst.getSpanningTree();
+
+        // Creare un nuovo grafo per rappresentare l'MST
+        Graph<Cella, DefaultWeightedEdge> mst = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+
+        // Aggiungere vertici e archi all'MST
+        for (DefaultWeightedEdge edge : spanningTree.getEdges()) {
+            Cella source = grafo.getEdgeSource(edge);
+            Cella target = grafo.getEdgeTarget(edge);
+            double weight = grafo.getEdgeWeight(edge);
+
+            mst.addVertex(source);
+            mst.addVertex(target);
+            DefaultWeightedEdge mstEdge = mst.addEdge(source, target);
+            mst.setEdgeWeight(mstEdge, weight);
+        }
+        // Salva l'immagine dell'MST su disco
+        stampaGrafo(mst, "output\\grafi\\mst.txt", PATH_MST );
+    }
+
     /**
      * Metodo che permette di stampare a console un grafo (ovvero i vertici e le connessioni)
      * Inoltre scrive su un file di testo ciò che è stato scritto sulla console.
      */
-    public static void stampaGrafo() {
+    public static void stampaGrafo(Graph<Cella, DefaultWeightedEdge> grafo, String path, String nomeImmagine) {
 
         // Verifica se la cartella "output" esiste, altrimenti la crea
         Path outputFolderPath = Paths.get(Costanti.OUT_PATH);
@@ -108,8 +131,7 @@ public class Grafo {
 
         // Crea un oggetto PrintWriter per scrivere l'output sulla console
         try (PrintWriter consoleWriter = new PrintWriter(System.out);
-
-             PrintWriter fileWriter = new PrintWriter(new FileWriter("output\\grafi\\grafo.txt"))) {
+             PrintWriter fileWriter = new PrintWriter(new FileWriter(path))) {
 
             for (Cella vertice : grafo.vertexSet()) {
                 // Stampa il contenuto del vertice sia sulla console che nel file di testo
@@ -166,7 +188,7 @@ public class Grafo {
 
             // Salva l'immagine su disco
             try {
-                File imgFile = new File(PATH_ORIENTED_GRAPH_IMAGE);
+                File imgFile = new File(nomeImmagine);
                 ImageIO.write(image, PNG, imgFile);
             } catch (IOException e) {
                 System.out.println("Errore nella scrittura dell'immagine su disco: " + e.getMessage());
@@ -175,24 +197,6 @@ public class Grafo {
         } catch (IOException e) {
             // Gestisce eventuali eccezioni di IO (Input/Output) stampando il messaggio di errore sulla console
             System.out.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Funzione che permette la creazione di una cartella se non esistente.
-     * Verifica se esiste. Se non esiste la cartella la crea, altrimenti ritorna
-     *
-     * @param cartella -> path di una cartella da creare (post verifica di non esistenza)
-     */
-    private static void creaCartella(Path cartella) {
-
-        if (!Files.exists(cartella)) {
-            try {
-                Files.createDirectories(cartella);
-                System.out.println(Costanti.FOLDER_CREATION_SUCCESS);
-            } catch (IOException e) {
-                System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
-            }
         }
     }
 }
