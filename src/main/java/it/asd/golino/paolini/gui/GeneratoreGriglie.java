@@ -12,6 +12,10 @@ import java.util.Arrays;
 
 public class GeneratoreGriglie extends JFrame {
 
+    /**
+     * Funzione che permette di stampare la griglia iniziale
+     * @param griglia griglia da stampare
+     */
     public static void stampaGriglia(Griglia griglia) {
 
         int altezza = griglia.getAltezza();
@@ -19,11 +23,7 @@ public class GeneratoreGriglie extends JFrame {
 
         Cella[][] grid = griglia.getGriglia();
 
-        ArrayList<Agente> listaAgenti = new ArrayList<>();
-        for(var agente : griglia.getListaAgenti())
-        {
-            listaAgenti.add(agente);
-        }
+        ArrayList<Agente> listaAgenti = new ArrayList<>(griglia.getListaAgenti());
 
         JFrame dialogGrid = new JFrame("Griglia");
         dialogGrid.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Chiudi solo questa finestra

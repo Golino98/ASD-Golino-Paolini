@@ -7,6 +7,10 @@ import static it.asd.golino.paolini.utility.Costanti.*;
 
 public class StyleSystemGui
 {
+    /**
+     * Metodo che permette di impostare l'aspetto della GUI principale e li imposta secondo l'aspetto richiesto
+     * @param dialog variabile che estende JFrame e che contiene le variabili della GUI
+     */
     public static void setSetupWindow(GuiGeneratoreGriglie dialog)
     {
         // Impostazioni di stile per i componenti dell'interfaccia utente...
