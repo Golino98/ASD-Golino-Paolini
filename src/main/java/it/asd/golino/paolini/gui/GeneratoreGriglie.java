@@ -103,6 +103,11 @@ public class GeneratoreGriglie extends JFrame {
         }
     }
 
+    /**
+     * Metodo che permette di effettuare lo screen del frame che gli si passa
+     * @param frame sul quale effettuare lo screen
+     * @return lo screen appena fatto
+     */
     public static BufferedImage catturaImmagineGriglia(JFrame frame) {
         BufferedImage image = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
         frame.paint(image.getGraphics());

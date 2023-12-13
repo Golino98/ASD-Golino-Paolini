@@ -12,7 +12,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.alg.shortestpath.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -195,6 +194,5 @@ public class Grafo {
                 System.out.println(Costanti.FOLDER_CREATION_ERROR + e.getMessage());
             }
         }
-
     }
 }

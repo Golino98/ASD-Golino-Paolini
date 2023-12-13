@@ -11,9 +11,9 @@ public class Cella {
     /**
      * Metodo costruttore
      *
-     * @param x      -> ascisse
-     * @param y      -> ordinate
-     * @param status -> stato della cella:
+     * @param x       ascisse
+     * @param y       ordinate
+     * @param status  stato della cella:
      *               0 -> attraversabile
      *               1 -> non attraversabile
      *               2 -> start per agent

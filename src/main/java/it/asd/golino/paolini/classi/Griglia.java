@@ -171,16 +171,11 @@ public class Griglia {
             errore.dispose();
         }
     }
+
         /**
          * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
          *
-         * @param x -> cella sulla quale effettuare il controllo
-         * @return true se ha tutti i vicini disponibili, falso altrimenti
-         */
-        /**
-         * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
-         *
-         * @param x -> cella sulla quale effettuare il controllo
+         * @param x cella sulla quale effettuare il controllo
          * @return true se ha tutti i vicini disponibili, falso altrimenti
          */
         public boolean senzaVicini (Cella x){
@@ -213,8 +208,8 @@ public class Griglia {
         /**
          * Metodo che presa una cella, verifica se i vicini sono delle possibili celle per gli agglomerati
          *
-         * @param x           -> cella sulla quale effettuare il controllo
-         * @param disponibili -> lista delle celle scelte per gli agglomerati
+         * @param x            cella sulla quale effettuare il controllo
+         * @param disponibili  lista delle celle scelte per gli agglomerati
          */
         public void senzaVicini (Cella x, ArrayList < Cella > disponibili){
             // Controllo se non sono su un bordo
@@ -238,8 +233,8 @@ public class Griglia {
         }
 
         /**
-         * @param lista -> arrayList che permette di selezionare un elemento casuale da essa
-         * @return -> l'elemento casuale della lista (e lo rimuove da essa)
+         * @param lista arrayList che permette di selezionare un elemento casuale da essa
+         * @return l'elemento casuale della lista (e lo rimuove da essa)
          */
         public Cella sceltaRandom (ArrayList < Cella > lista) {
             int random = rnd.nextInt(lista.size());
@@ -249,7 +244,7 @@ public class Griglia {
         /**
          * Metodo cambia lo stato della cella da libero a occupato (dopo aver verificato che sia effettivamente libera)
          *
-         * @param cella -> cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
+         * @param cella cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
          */
         private void cambiaStatoCella (Cella cella){
             if (cella.getCellStatus() == StatoCelle.LIBERA) {
@@ -261,10 +256,10 @@ public class Griglia {
          * Metodo che permette di modificare lo stato di una cella.
          * Viene effettuato una verifica sul valore dello stato e poi viene successivamente modificato
          *
-         * @param riga          -> indice di riga della cella da controllare
-         * @param colonna       -> indice di colonna della cella da controllare
-         * @param statoIniziale -> valore rappresentante lo stato iniziale della cella
-         * @param statoFinale   -> valore rappresentante lo stato finale della cella
+         * @param riga           indice di riga della cella da controllare
+         * @param colonna        indice di colonna della cella da controllare
+         * @param statoIniziale  valore rappresentante lo stato iniziale della cella
+         * @param statoFinale    valore rappresentante lo stato finale della cella
          * @return -> true se viene effettuato il cambio di stato, false altrimenti.
          */
         private boolean cambiaStatoCella ( int riga, int colonna, int statoIniziale, int statoFinale){
