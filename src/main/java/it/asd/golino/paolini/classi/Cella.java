@@ -5,15 +5,16 @@ import it.asd.golino.paolini.utility.StatoCelle;
 import static it.asd.golino.paolini.utility.Costanti.NOME_CELLA;
 
 public class Cella {
-    private int riga, colonna;
+    private final int riga;
+    private final int colonna;
     private StatoCelle status;
 
     /**
      * Metodo costruttore
      *
-     * @param x      -> ascisse
-     * @param y      -> ordinate
-     * @param status -> stato della cella:
+     * @param x       ascisse
+     * @param y       ordinate
+     * @param status  stato della cella:
      *               0 -> attraversabile
      *               1 -> non attraversabile
      *               2 -> start per agent
