@@ -26,9 +26,11 @@ public class Griglia {
     private final int agenti;
     private final Random rnd = new Random();
 
-    public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti) {
+    private final int max;
+    public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti, int max) {
         this.altezza = altezza;
         this.larghezza = larghezza;
+        this.max = max;
 
         this.griglia = new Cella[altezza][larghezza];
         for (int i = 0; i < altezza; i++) {

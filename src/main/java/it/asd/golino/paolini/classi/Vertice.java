@@ -13,4 +13,9 @@ public class Vertice
     public static ArrayList<Cella> getVertici() {
         return vertici;
     }
+
+    public static void eliminaTuttiVertici()
+    {
+        vertici.clear();
+    }
 }

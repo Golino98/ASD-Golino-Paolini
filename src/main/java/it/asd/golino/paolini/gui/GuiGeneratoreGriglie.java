@@ -69,8 +69,6 @@ public class GuiGeneratoreGriglie extends JFrame {
             int agenti = Integer.parseInt(numeroAgentiField.getText());
             int max = Integer.parseInt(maxField.getText());
 
-            // TODO: aggiungere controllo iniziale numero celle e numero agenti
-
             // Controllo sulla positività degli input
             if (altezza <= 0 || larghezza <= 0 || percentage < 0 || agglomerazione <= 0 || agenti < 1 || max < 1) {
                 showErrorDialog(ERRORE_NUMERO_NEGATIVO);
@@ -97,7 +95,7 @@ public class GuiGeneratoreGriglie extends JFrame {
                 resetTextField(numeroAgentiField);
             } else {
                 dispose();
-                Griglia griglia = new Griglia(altezza, larghezza, percentage, agglomerazione, agenti);
+                Griglia griglia = new Griglia(altezza, larghezza, percentage, agglomerazione, agenti, max);
                 GeneratoreGriglie.stampaGriglia(griglia);
             }
         } catch (NumberFormatException e) {

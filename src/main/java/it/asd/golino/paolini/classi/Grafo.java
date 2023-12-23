@@ -34,7 +34,7 @@ import static it.asd.golino.paolini.utility.GestoreCartelle.creaCartella;
 public class Grafo {
 
     // Creazione di un grafo direzionato pesato utilizzando JGraphT
-    private static final Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    public static Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
     /**
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
@@ -42,8 +42,12 @@ public class Grafo {
     public static void creaGrafo() {
         Vertice.getVertici().forEach(grafo::addVertex);
         for (var s : grafo.vertexSet()) {
-            creaConnessioni(s, grafo);
+            grafo = creaConnessioni(s, grafo);
         }
+
+        // LIBERO LO SPAZIO ELIMINANDO TUTTI I VERTICI, ORA SONO NEL VERTEXSET
+        Vertice.eliminaTuttiVertici();
+
         stampaGrafo(grafo, PATH_CONNESSIONE_CELLE_LIBERE, PATH_ORIENTED_GRAPH_IMAGE);
 
         // Creo l'albero dei cammini minimi delle cella senza considerare gli agenti
@@ -54,6 +58,7 @@ public class Grafo {
         // Ordina la lista di agenti in base all'indice
         Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
 
+        /*
         for (Agente entryAgent : Griglia.listaAgenti) {
             grafoConAgenti.addVertex(entryAgent.getCellaStart());
             grafoConAgenti.addVertex(entryAgent.getCellaGoal());
@@ -62,6 +67,7 @@ public class Grafo {
             creaAlberoCamminiMinimi(grafoConAgenti, String.format(PATH_MST_AGENTS_TXT, entryAgent.getIndice()), String.format(PATH_MST_AGENTS_IMAGE, entryAgent.getIndice()));
 
         }
+         */
     }
 
     /**
@@ -70,8 +76,9 @@ public class Grafo {
      *
      * @param vertice vertice sul quale creare le connessioni
      */
-    public static void creaConnessioni(Cella vertice, Graph<Cella, DefaultWeightedEdge> graph) {
+    public static Graph<Cella, DefaultWeightedEdge> creaConnessioni(Cella vertice, Graph<Cella, DefaultWeightedEdge> grafo) {
 
+        var graph = grafo;
         ArrayList<Cella> diagonali = new ArrayList<>();
         ArrayList<Cella> cardinali = new ArrayList<>();
 
@@ -89,20 +96,20 @@ public class Grafo {
 
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in diagonale
         for (Cella diagonale : diagonali) {
-            for (Cella vertex : grafo.vertexSet()) {
+            for (Cella vertex : graph.vertexSet()) {
                 if (diagonale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
-                    grafo.addEdge(vertice, vertex);
-                    grafo.setEdgeWeight(vertice, vertex, Costanti.DIAGONALE);
+                    graph.addEdge(vertice, vertex);
+                    graph.setEdgeWeight(vertice, vertex, Costanti.DIAGONALE);
                 }
             }
         }
 
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in modo cardinale
         for (Cella cardinale : cardinali) {
-            for (Cella vertex : grafo.vertexSet()) {
-                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
-                    grafo.addEdge(vertice, vertex);
-                    grafo.setEdgeWeight(vertice, vertex, Costanti.MOSSA_CARDINALE);
+            for (Cella vertex : graph.vertexSet()) {
+                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !graph.containsEdge(vertex, vertice)) {
+                    graph.addEdge(vertice, vertex);
+                    graph.setEdgeWeight(vertice, vertex, Costanti.MOSSA_CARDINALE);
                 }
             }
         }
@@ -112,6 +119,7 @@ public class Grafo {
             graph.addEdge(vertex, vertex);
             graph.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
+        return graph;
     }
 
     /**
