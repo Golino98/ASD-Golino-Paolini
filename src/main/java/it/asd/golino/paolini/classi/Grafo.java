@@ -39,9 +39,23 @@ public class Grafo {
      */
     public static void creaGrafo() {
         Vertice.getVertici().forEach(grafo::addVertex);
-        grafo.vertexSet().forEach(Grafo::creaConnessioni);
+        for (var s : grafo.vertexSet()) {
+            creaConnessioni(s, grafo);
+        }
         stampaGrafo(grafo, "output\\grafi\\grafo.txt", PATH_ORIENTED_GRAPH_IMAGE);
-        creaAlberoCamminiMinimi();
+
+        // Creo l'albero dei cammini minimi delle cella senza considerare gli agenti
+        creaAlberoCamminiMinimi(grafo, PATH_MST_NO_AGENTS_TXT, PATH_MST_NO_AGENTS_IMAGE);
+
+        var grafoConAgenti = grafo;
+
+        for (Agente entryAgent : Griglia.listaAgenti) {
+            grafoConAgenti.addVertex(entryAgent.getCellaStart());
+            grafoConAgenti.addVertex(entryAgent.getCellaGoal());
+            creaConnessioni(entryAgent.getCellaStart(), grafoConAgenti);
+            creaConnessioni(entryAgent.getCellaGoal(), grafoConAgenti);
+            creaAlberoCamminiMinimi(grafoConAgenti, String.format(PATH_MST_AGENTS_TXT, entryAgent.getIndice()), String.format(PATH_MST_AGENTS_IMAGE, entryAgent.getIndice()));
+        }
     }
 
     /**
@@ -50,7 +64,7 @@ public class Grafo {
      *
      * @param vertice vertice sul quale creare le connessioni
      */
-    public static void creaConnessioni(Cella vertice) {
+    public static void creaConnessioni(Cella vertice, Graph<Cella, DefaultWeightedEdge> graph) {
 
         ArrayList<Cella> diagonali = new ArrayList<>();
         ArrayList<Cella> cardinali = new ArrayList<>();
@@ -88,14 +102,18 @@ public class Grafo {
         }
 
         // Creazione dei nodi cappio con sè stessi
-        for (Cella vertex : grafo.vertexSet()) {
-            grafo.addEdge(vertex, vertex);
-            grafo.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
+        for (Cella vertex : graph.vertexSet()) {
+            graph.addEdge(vertex, vertex);
+            graph.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
     }
 
-    public static void creaAlberoCamminiMinimi() {
-        KruskalMinimumSpanningTree<Cella, DefaultWeightedEdge> kmst = new KruskalMinimumSpanningTree<>(grafo);
+    /**
+     * Creazione dell'albero dei cammini minimi tramite Kruskal (solo delle celle attraversabili)
+     */
+    public static void creaAlberoCamminiMinimi(Graph<Cella, DefaultWeightedEdge> graph, String path_txt, String path_image) {
+
+        KruskalMinimumSpanningTree<Cella, DefaultWeightedEdge> kmst = new KruskalMinimumSpanningTree<>(graph);
         var spanningTree = kmst.getSpanningTree();
 
         // Creare un nuovo grafo per rappresentare l'MST
@@ -103,9 +121,9 @@ public class Grafo {
 
         // Aggiungere vertici e archi all'MST
         for (DefaultWeightedEdge edge : spanningTree.getEdges()) {
-            Cella source = grafo.getEdgeSource(edge);
-            Cella target = grafo.getEdgeTarget(edge);
-            double weight = grafo.getEdgeWeight(edge);
+            Cella source = graph.getEdgeSource(edge);
+            Cella target = graph.getEdgeTarget(edge);
+            double weight = graph.getEdgeWeight(edge);
 
             mst.addVertex(source);
             mst.addVertex(target);
@@ -113,7 +131,7 @@ public class Grafo {
             mst.setEdgeWeight(mstEdge, weight);
         }
         // Salva l'immagine dell'MST su disco
-        stampaGrafo(mst, "output\\grafi\\mst.txt", PATH_MST );
+        stampaGrafo(mst, path_txt, path_image);
     }
 
     /**

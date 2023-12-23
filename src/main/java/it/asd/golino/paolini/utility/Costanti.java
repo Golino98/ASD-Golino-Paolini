@@ -27,6 +27,11 @@ public class Costanti {
 
     public static final String PNG = "PNG";
     public static final String PATH_ORIENTED_GRAPH_IMAGE = "output\\grafi\\grafo_dei_pesi.png";
-    public static final String PATH_MST = "output\\grafi\\minSpanningTree.png";
+
+    public static final String PATH_MST_NO_AGENTS_IMAGE = "output\\grafi\\minSpanningTreeNoAgents.png";
+    public static final String PATH_MST_NO_AGENTS_TXT = "output\\grafi\\mstNoAgents.txt";
+
+    public static final String PATH_MST_AGENTS_IMAGE = "output\\grafi\\minSpanningTreeAgents_%d.png";
+    public static final String PATH_MST_AGENTS_TXT = "output\\grafi\\mstAgents_%d.txt";
 
 }

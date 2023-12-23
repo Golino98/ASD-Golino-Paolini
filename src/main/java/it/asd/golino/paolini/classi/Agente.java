@@ -1,6 +1,7 @@
 package it.asd.golino.paolini.classi;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Agente {
