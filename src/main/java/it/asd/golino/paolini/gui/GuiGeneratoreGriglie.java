@@ -24,6 +24,8 @@ public class GuiGeneratoreGriglie extends JFrame {
     JTextField fattoreAgglomerazioneField;
     JLabel numeroAgentiLabel;
     JTextField numeroAgentiField;
+    JLabel maxLabel;
+    JTextField maxField;
 
     public GuiGeneratoreGriglie() {
         setContentPane(contentPane);
@@ -65,11 +67,12 @@ public class GuiGeneratoreGriglie extends JFrame {
             int percentage = Integer.parseInt(percentualeCelleTraversabiliField.getText());
             int agglomerazione = Integer.parseInt(fattoreAgglomerazioneField.getText());
             int agenti = Integer.parseInt(numeroAgentiField.getText());
+            int max = Integer.parseInt(maxField.getText());
 
             // TODO: aggiungere controllo iniziale numero celle e numero agenti
 
             // Controllo sulla positività degli input
-            if (altezza <= 0 || larghezza <= 0 || percentage < 0 || agglomerazione <= 0 || agenti < 1) {
+            if (altezza <= 0 || larghezza <= 0 || percentage < 0 || agglomerazione <= 0 || agenti < 1 || max < 1) {
                 showErrorDialog(ERRORE_NUMERO_NEGATIVO);
                 if (altezza <= 0) {
                     resetTextField(altezzaField);
@@ -79,11 +82,12 @@ public class GuiGeneratoreGriglie extends JFrame {
                     resetTextField(percentualeCelleTraversabiliField);
                 } else if (agglomerazione <= 0) {
                     resetTextField(fattoreAgglomerazioneField);
+                } else if (max < 1) {
+                    resetTextField(maxField);
                 } else {
                     resetTextField(numeroAgentiField);
                 }
-            } else if (percentage > 100)
-            {
+            } else if (percentage > 100) {
                 showErrorDialog(ERRORE_PERCENTUALE_MASSIMA);
                 resetTextField(percentualeCelleTraversabiliField);
 
@@ -108,6 +112,7 @@ public class GuiGeneratoreGriglie extends JFrame {
         resetTextField(percentualeCelleTraversabiliField);
         resetTextField(fattoreAgglomerazioneField);
         resetTextField(numeroAgentiField);
+        resetTextField(maxField);
     }
 
     private void handleWindowClose() {

@@ -22,18 +22,21 @@ public class StyleSystemGui
         dialog.percentualeCelleTraversabiliLabel.setFont(TEXT_FONT);
         dialog.agglomerazioneLabel.setFont(TEXT_FONT);
         dialog.numeroAgentiLabel.setFont(TEXT_FONT);
+        dialog.maxLabel.setFont(TEXT_FONT);
 
         dialog.altezzaField.setFont(BUTTON_FONT);
         dialog.larghezzaField.setFont(BUTTON_FONT);
         dialog.percentualeCelleTraversabiliField.setFont(BUTTON_FONT);
         dialog.fattoreAgglomerazioneField.setFont(BUTTON_FONT);
         dialog.numeroAgentiField.setFont(BUTTON_FONT);
+        dialog.maxField.setFont(BUTTON_FONT);
 
         dialog.altezzaField.setHorizontalAlignment(SwingConstants.RIGHT);
         dialog.larghezzaField.setHorizontalAlignment(SwingConstants.RIGHT);
         dialog.percentualeCelleTraversabiliField.setHorizontalAlignment(SwingConstants.RIGHT);
         dialog.fattoreAgglomerazioneField.setHorizontalAlignment(SwingConstants.RIGHT);
         dialog.numeroAgentiField.setHorizontalAlignment(SwingConstants.RIGHT);
+        dialog.maxField.setHorizontalAlignment(SwingConstants.RIGHT);
 
         dialog.buttonGenera.setFont(BUTTON_FONT);
         dialog.buttonReset.setFont(BUTTON_FONT);

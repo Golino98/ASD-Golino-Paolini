@@ -24,6 +24,8 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 import static it.asd.golino.paolini.utility.Costanti.*;
@@ -42,12 +44,15 @@ public class Grafo {
         for (var s : grafo.vertexSet()) {
             creaConnessioni(s, grafo);
         }
-        stampaGrafo(grafo, "output\\grafi\\grafo.txt", PATH_ORIENTED_GRAPH_IMAGE);
+        stampaGrafo(grafo, PATH_CONNESSIONE_CELLE_LIBERE, PATH_ORIENTED_GRAPH_IMAGE);
 
         // Creo l'albero dei cammini minimi delle cella senza considerare gli agenti
         creaAlberoCamminiMinimi(grafo, PATH_MST_NO_AGENTS_TXT, PATH_MST_NO_AGENTS_IMAGE);
 
         var grafoConAgenti = grafo;
+
+        // Ordina la lista di agenti in base all'indice
+        Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
 
         for (Agente entryAgent : Griglia.listaAgenti) {
             grafoConAgenti.addVertex(entryAgent.getCellaStart());
@@ -55,6 +60,7 @@ public class Grafo {
             creaConnessioni(entryAgent.getCellaStart(), grafoConAgenti);
             creaConnessioni(entryAgent.getCellaGoal(), grafoConAgenti);
             creaAlberoCamminiMinimi(grafoConAgenti, String.format(PATH_MST_AGENTS_TXT, entryAgent.getIndice()), String.format(PATH_MST_AGENTS_IMAGE, entryAgent.getIndice()));
+
         }
     }
 
@@ -132,6 +138,10 @@ public class Grafo {
         }
         // Salva l'immagine dell'MST su disco
         stampaGrafo(mst, path_txt, path_image);
+    }
+
+    public static void creaPercorsoMinimo(Graph<Cella, DefaultWeightedEdge> graph, String path_txt, String path_image) {
+
     }
 
     /**
