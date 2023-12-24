@@ -5,28 +5,26 @@ public class VerticeTempo {
     private int t;
     private double f;
     private double g;
-
-    public double getH() {
-        return h;
-    }
-
-    public void setH(double h) {
-        this.h = h;
-    }
-
-    private double h;
     private VerticeTempo p;
-
-    public VerticeTempo getP() {
-        return p;
-    }
-
-    public void setP(VerticeTempo p) {
-        this.p = p;
-    }
 
     public VerticeTempo(Cella v, int t) {
         this.v = v;
+        this.t = t;
+    }
+
+    public Cella getV() {
+        return v;
+    }
+
+    public void setV(Cella v) {
+        this.v = v;
+    }
+
+    public int getT() {
+        return t;
+    }
+
+    public void setT(int t) {
         this.t = t;
     }
 
@@ -44,5 +42,13 @@ public class VerticeTempo {
 
     public void setG(double g) {
         this.g = g;
+    }
+
+    public VerticeTempo getP() {
+        return p;
+    }
+
+    public void setP(VerticeTempo p) {
+        this.p = p;
     }
 }
