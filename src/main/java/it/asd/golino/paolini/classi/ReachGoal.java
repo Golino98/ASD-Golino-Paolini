@@ -55,13 +55,18 @@ public class ReachGoal {
                         traversable = true;
                         for (Agente a : sigma) {
 
-                            traversable = false;
+                            // Riga 28
+                            if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+                                    (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+                                            && a.getCellaPercorso(t).toString().equalsIgnoreCase(n.toString())))
+                            {
+                                traversable = false;
+                            }
                         }
 
                         VerticeTempo n_t1 = null;
                         for (var control : v_t) {
-                            if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString()))
-                            {
+                            if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
                                 n_t1 = control;
                                 break;
                             }

@@ -15,7 +15,7 @@ public class Agente {
     private final Color randomColor;
 
     private boolean foundBest;
-    private Stack<Cella> percorso;
+    private Stack<Cella> percorso = new Stack<>();
 
     private static int i = 1;
 
@@ -70,5 +70,10 @@ public class Agente {
         percorso.pop();
         percorso.push(cella);
         percorso.push(cellaGoal);
+    }
+
+    public Cella getCellaPercorso(int istanteTemporale)
+    {
+        return percorso.get(istanteTemporale);
     }
 }
