@@ -51,4 +51,10 @@ public class VerticeTempo {
     public void setP(VerticeTempo p) {
         this.p = p;
     }
+
+    @Override
+    public String toString()
+    {
+        return "" + this.v.toString() + " istante t=" + this.t + " ---";
+    }
 }

@@ -39,7 +39,7 @@ public class Grafo {
     /**
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
      */
-    public static void creaGrafo() {
+    public static void creaGrafo(int max, Griglia griglia) {
         Vertice.getVertici().forEach(grafo::addVertex);
         for (var s : grafo.vertexSet()) {
             grafo = creaConnessioni(s, grafo);
@@ -53,21 +53,17 @@ public class Grafo {
         // Creo l'albero dei cammini minimi delle cella senza considerare gli agenti
         creaAlberoCamminiMinimi(grafo, PATH_MST_NO_AGENTS_TXT, PATH_MST_NO_AGENTS_IMAGE);
 
-        var grafoConAgenti = grafo;
-
         // Ordina la lista di agenti in base all'indice
         Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
+        ArrayList<Agente> percorso = new ArrayList<>();
 
-        /*
-        for (Agente entryAgent : Griglia.listaAgenti) {
-            grafoConAgenti.addVertex(entryAgent.getCellaStart());
-            grafoConAgenti.addVertex(entryAgent.getCellaGoal());
-            creaConnessioni(entryAgent.getCellaStart(), grafoConAgenti);
-            creaConnessioni(entryAgent.getCellaGoal(), grafoConAgenti);
-            creaAlberoCamminiMinimi(grafoConAgenti, String.format(PATH_MST_AGENTS_TXT, entryAgent.getIndice()), String.format(PATH_MST_AGENTS_IMAGE, entryAgent.getIndice()));
-
+        System.out.println("YOOOOOOOOOOO");
+        for(Agente a : Griglia.listaAgenti)
+        {
+            percorso.add(ReachGoal.calculateReachGoal(grafo, a.getCellaStart(), a.getCellaGoal(), max, griglia));
+            System.out.println(a.stampaPercorso());
         }
-         */
+
     }
 
     /**

@@ -10,8 +10,9 @@ public class ReachGoal {
 
     private static final ArrayList<Agente> sigma = new ArrayList<>();
 
-    public static void calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Cella init, Cella goal, int max) {
+    public static Agente calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Cella init, Cella goal, int max, Griglia griglia) {
         boolean traversable;
+        int index = 0;
 
         ArrayList<VerticeTempo> closed = new ArrayList<>(), open = new ArrayList<>();
         open.add(new VerticeTempo(init, 0));
@@ -27,21 +28,27 @@ public class ReachGoal {
             }
         }
 
-        int index = v_t.indexOf(new VerticeTempo(init, 0));
-
-        // g(<init,0>) <- 0
+        for (var v : v_t) {
+            if (v.getV().toString().equalsIgnoreCase(init.toString()) && v.getT() == 0) {
+                index = v_t.indexOf(v);
+                break;
+            }
+        }
         v_t.get(index).setG(0);
 
-        // f(<init,0>) <- h(init, goal)
+        // 11 -  f(<init,0>) <- h(init, goal)
         v_t.get(index).setF(Calcolatore.calcolaEuristica(init, goal));
 
         while (!open.isEmpty()) {
-            // <v,t> <- the state in Open with the lowest f-score
+            // 13 - <v,t> <- the state in Open with the lowest f-score
             var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
             open.remove(lowest_f_score_state);
             closed.add(lowest_f_score_state);
-            if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
-                // sigma <- sigma + reconstruct path
+            if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString()))
+            {
+                var percorso = reconstructPath(init, goal, lowest_f_score_state.getP(), lowest_f_score_state.getT(), griglia);
+                sigma.add(percorso);
+                return percorso;
             }
 
             int t = lowest_f_score_state.getT();
@@ -58,8 +65,7 @@ public class ReachGoal {
                             // Riga 28
                             if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
                                     (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-                                            && a.getCellaPercorso(t).toString().equalsIgnoreCase(n.toString())))
-                            {
+                                            && a.getCellaPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
                                 traversable = false;
                             }
                         }
@@ -72,33 +78,48 @@ public class ReachGoal {
                             }
                         }
 
-                        var indice = v_t.indexOf(n_t1);
-
-                        // CONTROLLARE SE FUNZIONA CON I NEW PERCHÈ HO PAURA CHE LAVORI SU INDIRIZZI E NON SU VALORI
-                        if (traversable) {
-                            if (lowest_f_score_state.getG() + Calcolatore.calcolaEuristica(lowest_f_score_state.getV(), n) < v_t.get(indice).getG()) {
-                                // P(<n, t+1>) <- <v,t>
-                                v_t.get(indice).setP(lowest_f_score_state);
-
-                                // g(<n, t+1>) <- g(<v,t>) + w(v,n)
-                                v_t.get(indice).setG(lowest_f_score_state.getG() + Calcolatore.calcolaEuristica(lowest_f_score_state.getV(), n));
-
-                                v_t.get(indice).setF(v_t.get(indice).getG() + Calcolatore.calcolaEuristica(n, goal));
+                        if (n_t1 != null) {
+                            double w = 0;
+                            if (G.getEdge(lowest_f_score_state.getV(), n) != null) {
+                                w = G.getEdgeWeight(G.getEdge(lowest_f_score_state.getV(), n));
+                            } else {
+                                w = G.getEdgeWeight(G.getEdge(n, lowest_f_score_state.getV()));
                             }
 
-                            if (!open.contains(n_t1)) {
-                                open.add(n_t1);
+                            if (traversable) {
+                                if (lowest_f_score_state.getG() + w < n_t1.getG()) {
+                                    // P(<n, t+1>) <- <v,t>
+                                    n_t1.setP(lowest_f_score_state);
+
+                                    // g(<n, t+1>) <- g(<v,t>) + w(v,n)
+                                    n_t1.setG(lowest_f_score_state.getG() + w);
+                                    n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, goal));
+                                }
+
+                                if (!open.contains(n_t1)) {
+                                    open.add(n_t1);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        //RITORNO ERRORE
+            //RITORNO ERRORE
+        }
+        return null;
     }
 
-    public static void aggiungiAgentePercorsoOttimo(Agente agente) {
-        sigma.add(agente);
+    private static Agente reconstructPath(Cella init, Cella goal, VerticeTempo P, int t, Griglia griglia) {
+        for (var a : Griglia.listaAgenti) {
+            if (a.getCellaStart().toString().equalsIgnoreCase(init.toString()) && a.getCellaGoal().toString().equalsIgnoreCase(goal.toString())) {
+                while (P.getV().toString().equalsIgnoreCase(init.toString())) {
+                    a.aggiungiNodoPercorso(P.getP().getV(), t, griglia);
+                    P = P.getP();
+                }
+                a.setFoundBest(true);
+            }
+        }
+        return null;
     }
 }

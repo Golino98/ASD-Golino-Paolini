@@ -1,8 +1,11 @@
 package it.asd.golino.paolini.classi;
 
+import it.asd.golino.paolini.utility.StatoCelle;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
@@ -15,7 +18,7 @@ public class Agente {
     private final Color randomColor;
 
     private boolean foundBest;
-    private Stack<Cella> percorso = new Stack<>();
+    private LinkedList<VerticeTempo> percorso = new LinkedList<>();
 
     private static int i = 1;
 
@@ -33,8 +36,8 @@ public class Agente {
 
         foundBest = false;
 
-        this.percorso.push(cellaStart);
-        this.percorso.push(cellaGoal);
+        this.percorso.add(new VerticeTempo(cellaGoal,0));
+        this.percorso.add(new VerticeTempo(cellaStart,0));
     }
 
     public Color getRandomColor() {
@@ -61,19 +64,33 @@ public class Agente {
         this.foundBest = foundBest;
     }
 
-    public Stack<Cella> getPercorso() {
+    public Queue<VerticeTempo> getPercorso() {
         return percorso;
     }
 
-    public void aggiungiNodoPercorso(Cella cella)
-    {
-        percorso.pop();
-        percorso.push(cella);
-        percorso.push(cellaGoal);
+    public void aggiungiNodoPercorso(Cella cella, int t, Griglia g) {
+        percorso.remove();
+        percorso.add(new VerticeTempo(cella,t));
+        percorso.add(new VerticeTempo(cellaStart,0));
+        percorso.getLast().setT(percorso.size()-1);
+
+        g.cambiaStatoCella(cella.getRiga(), cella.getColonna(), StatoCelle.LIBERA.getValore(), StatoCelle.PERCORSO.getValore());
+
     }
 
-    public Cella getCellaPercorso(int istanteTemporale)
+    public Cella getCellaPercorso(int t)
     {
-        return percorso.get(istanteTemporale);
+        return percorso.get(t).getV();
     }
+
+    public String stampaPercorso()
+    {
+        String result = "";
+        for(var cella : percorso)
+        {
+            result = result.concat(cella.toString() + " - - - ");
+        }
+        return result;
+    }
+
 }

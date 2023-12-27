@@ -27,6 +27,7 @@ public class Griglia {
     private final Random rnd = new Random();
 
     private final int max;
+
     public Griglia(int altezza, int larghezza, int percentuale, int agglomerazione, int agenti, int max) {
         this.altezza = altezza;
         this.larghezza = larghezza;
@@ -52,6 +53,10 @@ public class Griglia {
         return griglia;
     }
 
+    public int getMax() {
+        return max;
+    }
+
     public int getAltezza() {
         return altezza;
     }
@@ -59,6 +64,8 @@ public class Griglia {
     public int getLarghezza() {
         return larghezza;
     }
+
+
 
 
     /**
@@ -173,106 +180,106 @@ public class Griglia {
         }
     }
 
-        /**
-         * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
-         *
-         * @param x cella sulla quale effettuare il controllo
-         * @return true se ha tutti i vicini disponibili, falso altrimenti
-         */
-        public boolean senzaVicini (Cella x){
+    /**
+     * Funzione che permette di verificare se una cella ha la possibilità di avere vicini
+     *
+     * @param x cella sulla quale effettuare il controllo
+     * @return true se ha tutti i vicini disponibili, falso altrimenti
+     */
+    public boolean senzaVicini(Cella x) {
+
+        // Controllo la riga sotto
+        if (!(x.getRiga() + 1 >= altezza)) {
+            if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
+                return false;
+        }
+
+        // Controllo la riga a destra
+        if (!(x.getColonna() + 1 >= larghezza)) {
+            if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
+                return false;
+        }
+
+        // Controllo la riga sopra
+        if (!(x.getRiga() - 1 < 0)) {
+            if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
+                return false;
+        }
+
+        // Controllo la colonna a sinistra
+        if (!(x.getColonna() - 1 < 0)) {
+            if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() != StatoCelle.LIBERA) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Metodo che presa una cella, verifica se i vicini sono delle possibili celle per gli agglomerati
+     *
+     * @param x           cella sulla quale effettuare il controllo
+     * @param disponibili lista delle celle scelte per gli agglomerati
+     */
+    public void senzaVicini(Cella x, ArrayList<Cella> disponibili) {
+        // Controllo se non sono su un bordo
+        if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
+            return;
 
             // Controllo la riga sotto
-            if (!(x.getRiga() + 1 >= altezza)) {
-                if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
-                    return false;
-            }
+        else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
+            return;
 
             // Controllo la riga a destra
-            if (!(x.getColonna() + 1 >= larghezza)) {
-                if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
-                    return false;
-            }
+        else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
+            return;
 
             // Controllo la riga sopra
-            if (!(x.getRiga() - 1 < 0)) {
-                if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
-                    return false;
-            }
+        else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
+            return;
 
             // Controllo la colonna a sinistra
-            if (!(x.getColonna() - 1 < 0)) {
-                if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() != StatoCelle.LIBERA) return false;
-            }
-            return true;
-        }
+        else disponibili.add(x);
+    }
 
-        /**
-         * Metodo che presa una cella, verifica se i vicini sono delle possibili celle per gli agglomerati
-         *
-         * @param x            cella sulla quale effettuare il controllo
-         * @param disponibili  lista delle celle scelte per gli agglomerati
-         */
-        public void senzaVicini (Cella x, ArrayList < Cella > disponibili){
-            // Controllo se non sono su un bordo
-            if (x.getRiga() + 1 >= altezza || x.getRiga() - 1 < 0 || x.getColonna() + 1 >= larghezza || x.getColonna() - 1 < 0)
-                return;
+    /**
+     * @param lista arrayList che permette di selezionare un elemento casuale da essa
+     * @return l'elemento casuale della lista (e lo rimuove da essa)
+     */
+    public Cella sceltaRandom(ArrayList<Cella> lista) {
+        int random = rnd.nextInt(lista.size());
+        return lista.remove(random);
+    }
 
-                // Controllo la riga sotto
-            else if (griglia[x.getRiga() + 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
-                return;
-
-                // Controllo la riga a destra
-            else if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
-                return;
-
-                // Controllo la riga sopra
-            else if (griglia[x.getRiga() - 1][x.getColonna()].getCellStatus() != StatoCelle.LIBERA)
-                return;
-
-                // Controllo la colonna a sinistra
-            else disponibili.add(x);
-        }
-
-        /**
-         * @param lista arrayList che permette di selezionare un elemento casuale da essa
-         * @return l'elemento casuale della lista (e lo rimuove da essa)
-         */
-        public Cella sceltaRandom (ArrayList < Cella > lista) {
-            int random = rnd.nextInt(lista.size());
-            return lista.remove(random);
-        }
-
-        /**
-         * Metodo cambia lo stato della cella da libero a occupato (dopo aver verificato che sia effettivamente libera)
-         *
-         * @param cella cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
-         */
-        private void cambiaStatoCella (Cella cella){
-            if (cella.getCellStatus() == StatoCelle.LIBERA) {
-                cella.setStatus(StatoCelle.NON_ATTRAVERSABILE);
-            }
-        }
-
-        /**
-         * Metodo che permette di modificare lo stato di una cella.
-         * Viene effettuato una verifica sul valore dello stato e poi viene successivamente modificato
-         *
-         * @param riga           indice di riga della cella da controllare
-         * @param colonna        indice di colonna della cella da controllare
-         * @param statoIniziale  valore rappresentante lo stato iniziale della cella
-         * @param statoFinale    valore rappresentante lo stato finale della cella
-         * @return -> true se viene effettuato il cambio di stato, false altrimenti.
-         */
-        private boolean cambiaStatoCella ( int riga, int colonna, int statoIniziale, int statoFinale){
-            if (griglia[riga][colonna].getCellStatus().getValore() == statoIniziale) {
-
-                griglia[riga][colonna].setStatus(StatoCelle.getStatoByValore(statoFinale));
-                return true;
-            }
-            return false;
-        }
-
-        public ArrayList<Agente> getListaAgenti () {
-            return listaAgenti;
+    /**
+     * Metodo cambia lo stato della cella da libero a occupato (dopo aver verificato che sia effettivamente libera)
+     *
+     * @param cella cella sulla quale viene effettuato il controllo e che successivamente viene cambiata
+     */
+    public void cambiaStatoCella(Cella cella) {
+        if (cella.getCellStatus() == StatoCelle.LIBERA) {
+            cella.setStatus(StatoCelle.NON_ATTRAVERSABILE);
         }
     }
+
+    /**
+     * Metodo che permette di modificare lo stato di una cella.
+     * Viene effettuato una verifica sul valore dello stato e poi viene successivamente modificato
+     *
+     * @param riga          indice di riga della cella da controllare
+     * @param colonna       indice di colonna della cella da controllare
+     * @param statoIniziale valore rappresentante lo stato iniziale della cella
+     * @param statoFinale   valore rappresentante lo stato finale della cella
+     * @return -> true se viene effettuato il cambio di stato, false altrimenti.
+     */
+    public boolean cambiaStatoCella(int riga, int colonna, int statoIniziale, int statoFinale) {
+        if (griglia[riga][colonna].getCellStatus().getValore() == statoIniziale) {
+
+            griglia[riga][colonna].setStatus(StatoCelle.getStatoByValore(statoFinale));
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Agente> getListaAgenti() {
+        return listaAgenti;
+    }
+}

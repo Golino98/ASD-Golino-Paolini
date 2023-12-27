@@ -76,6 +76,8 @@ public class GeneratoreGriglie extends JFrame {
                         labelEnd.setForeground(Color.BLACK); // Imposta il colore del testo
                         cellPanel.add(labelEnd);
                         break;
+                    case 4:
+
                     default:
                         break;
                 }
@@ -83,7 +85,7 @@ public class GeneratoreGriglie extends JFrame {
             }
         }
 
-        Grafo.creaGrafo();
+        Grafo.creaGrafo(griglia.getMax(), griglia);
         dialogGrid.add(gridPanel);
         dialogGrid.pack();
         StyleSystemGui.setCenterOfTheScreen(dialogGrid);
