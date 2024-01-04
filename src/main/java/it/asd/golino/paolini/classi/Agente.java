@@ -18,7 +18,7 @@ public class Agente {
     private final Color randomColor;
 
     private boolean foundBest;
-    private LinkedList<VerticeTempo> percorso = new LinkedList<>();
+    private final LinkedList<VerticeTempo> percorso = new LinkedList<>();
 
     private static int i = 1;
 

@@ -57,10 +57,10 @@ public class Grafo {
         Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
         ArrayList<Agente> percorso = new ArrayList<>();
 
-        System.out.println("YOOOOOOOOOOO");
         for(Agente a : Griglia.listaAgenti)
         {
-            percorso.add(ReachGoal.calculateReachGoal(grafo, a.getCellaStart(), a.getCellaGoal(), max, griglia));
+            // riga che genera errore, da controllare
+            // percorso.add(ReachGoal.calculateReachGoal(grafo, a.getCellaStart(), a.getCellaGoal(), max, griglia));
             System.out.println(a.stampaPercorso());
         }
 
