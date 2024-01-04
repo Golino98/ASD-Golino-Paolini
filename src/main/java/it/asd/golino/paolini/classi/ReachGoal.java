@@ -19,6 +19,8 @@ public class ReachGoal {
 
         ArrayList<VerticeTempo> v_t = new ArrayList<>();
 
+        // devo averli già creati precedentemente per poi andarli a prendere direttamente
+        // possibile idea, usare una coppia chiave valore dove la chiave è <v,t> ed i valori sono le varie funzioni
         for (int t = 0; t <= max; t++) {
             for (var vertex : G.vertexSet()) {
                 VerticeTempo verticeTempo = new VerticeTempo(vertex, t);
