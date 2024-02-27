@@ -1,6 +1,7 @@
 package it.asd.golino.paolini.gui;
 
 import it.asd.golino.paolini.classi.Griglia;
+import it.asd.golino.paolini.classi.Risolutore;
 import it.asd.golino.paolini.utility.Calcolatore;
 
 import javax.swing.*;
@@ -95,8 +96,15 @@ public class GuiGeneratoreGriglie extends JFrame {
                 resetTextField(numeroAgentiField);
             } else {
                 dispose();
+
+                //Dopo aver effettuato tutti i controlli sui dati avvio effettivamente il programma
+
+                // Creo la griglia, generando automaticamente gli ostacoli e gli agenti nel percorso
                 Griglia griglia = new Griglia(altezza, larghezza, percentage, agglomerazione, agenti, max);
+
+                // Stampo la griglia
                 GeneratoreGriglie.stampaGriglia(griglia);
+                Risolutore.risolviProblema(griglia);
             }
         } catch (NumberFormatException e) {
             showErrorDialog(ERRORE_CONVERSIONE_NUMERO);

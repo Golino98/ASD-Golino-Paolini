@@ -18,6 +18,4 @@ public class Vertice
     {
         vertici.clear();
     }
-
-
 }

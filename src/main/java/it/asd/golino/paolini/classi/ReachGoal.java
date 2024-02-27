@@ -21,6 +21,7 @@ public class ReachGoal {
 
         // devo averli già creati precedentemente per poi andarli a prendere direttamente
         // possibile idea, usare una coppia chiave valore dove la chiave è <v,t> ed i valori sono le varie funzioni
+        // una roba di questo tipo: https://stackoverflow.com/questions/4956844/hashmap-with-multiple-values-under-the-same-key (capire come poter definire il padre)
         for (int t = 0; t <= max; t++) {
             for (var vertex : G.vertexSet()) {
                 VerticeTempo verticeTempo = new VerticeTempo(vertex, t);
@@ -41,33 +42,45 @@ public class ReachGoal {
         // 11 -  f(<init,0>) <- h(init, goal)
         v_t.get(index).setF(Calcolatore.calcolaEuristica(init, goal));
 
-        while (!open.isEmpty()) {
+        while (!(open.isEmpty())) {
             // 13 - <v,t> <- the state in Open with the lowest f-score
             var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
             open.remove(lowest_f_score_state);
             closed.add(lowest_f_score_state);
-            if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString()))
-            {
+            if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
                 var percorso = reconstructPath(init, goal, lowest_f_score_state.getP(), lowest_f_score_state.getT(), griglia);
                 sigma.add(percorso);
                 return percorso;
             }
 
             int t = lowest_f_score_state.getT();
+            index = -1;
+            Cella n;
             if (t < max) {
                 // foreach n in Adj[v]
                 for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
-                    Cella n = G.getEdgeTarget(edge);
+
+                    if (G.getEdgeTarget(edge) != lowest_f_score_state.getV()) {
+                        n = G.getEdgeTarget(edge);
+                    } else {
+                        n = G.getEdgeSource(edge);
+                    }
 
                     // if <n, t+1> not in Closed
-                    if (!closed.contains(new VerticeTempo(n, t + 1))) {
+                    for (var v : closed) {
+                        if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
+                            index = closed.indexOf(v);
+                        }
+                    }
+                    // se index = -1 allora esiste NON all'interno della lista closed
+                    if (index == -1) {
                         traversable = true;
                         for (Agente a : sigma) {
 
                             // Riga 28
-                            if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-                                    (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-                                            && a.getCellaPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+                            if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(closed.get(index).getV().toString()) ||
+                                (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString()) &&
+                                 a.getCellaPercorso(t).toString().equalsIgnoreCase(closed.get(index).getV().toString()))) {
                                 traversable = false;
                             }
                         }

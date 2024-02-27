@@ -24,7 +24,7 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.Comparator;
 
 
@@ -39,31 +39,23 @@ public class Grafo {
     /**
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
      */
-    public static void creaGrafo(int max, Griglia griglia) {
+    public static void creaGrafo() {
         Vertice.getVertici().forEach(grafo::addVertex);
         for (var s : grafo.vertexSet()) {
-            grafo = creaConnessioni(s, grafo);
+            creaConnessioni(s, grafo);
         }
 
-        // LIBERO LO SPAZIO ELIMINANDO TUTTI I VERTICI, ORA SONO NEL VERTEXSET
+        // Libero lo spazio dei vertici in quanto ora son tutti memorizzati nel vertexSet del mio grafo
         Vertice.eliminaTuttiVertici();
 
         stampaGrafo(grafo, PATH_CONNESSIONE_CELLE_LIBERE, PATH_ORIENTED_GRAPH_IMAGE);
 
-        // Creo l'albero dei cammini minimi delle cella senza considerare gli agenti
+        // Creo l'albero dei cammini minimi delle celle senza considerare gli agenti
         creaAlberoCamminiMinimi(grafo, PATH_MST_NO_AGENTS_TXT, PATH_MST_NO_AGENTS_IMAGE);
 
         // Ordina la lista di agenti in base all'indice
         Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
-        ArrayList<Agente> percorso = new ArrayList<>();
-
-        for(Agente a : Griglia.listaAgenti)
-        {
-            // riga che genera errore, da controllare
-            // percorso.add(ReachGoal.calculateReachGoal(grafo, a.getCellaStart(), a.getCellaGoal(), max, griglia));
-            System.out.println(a.stampaPercorso());
-        }
-
+        var percorso = new ArrayList<>();
     }
 
     /**
@@ -72,9 +64,8 @@ public class Grafo {
      *
      * @param vertice vertice sul quale creare le connessioni
      */
-    public static Graph<Cella, DefaultWeightedEdge> creaConnessioni(Cella vertice, Graph<Cella, DefaultWeightedEdge> grafo) {
+    public static void creaConnessioni(Cella vertice, Graph<Cella, DefaultWeightedEdge> grafo) {
 
-        var graph = grafo;
         ArrayList<Cella> diagonali = new ArrayList<>();
         ArrayList<Cella> cardinali = new ArrayList<>();
 
@@ -92,30 +83,29 @@ public class Grafo {
 
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in diagonale
         for (Cella diagonale : diagonali) {
-            for (Cella vertex : graph.vertexSet()) {
+            for (Cella vertex : grafo.vertexSet()) {
                 if (diagonale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
-                    graph.addEdge(vertice, vertex);
-                    graph.setEdgeWeight(vertice, vertex, Costanti.DIAGONALE);
+                    grafo.addEdge(vertice, vertex);
+                    grafo.setEdgeWeight(vertice, vertex, Costanti.DIAGONALE);
                 }
             }
         }
 
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in modo cardinale
         for (Cella cardinale : cardinali) {
-            for (Cella vertex : graph.vertexSet()) {
-                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !graph.containsEdge(vertex, vertice)) {
-                    graph.addEdge(vertice, vertex);
-                    graph.setEdgeWeight(vertice, vertex, Costanti.MOSSA_CARDINALE);
+            for (Cella vertex : grafo.vertexSet()) {
+                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
+                    grafo.addEdge(vertice, vertex);
+                    grafo.setEdgeWeight(vertice, vertex, Costanti.MOSSA_CARDINALE);
                 }
             }
         }
 
         // Creazione dei nodi cappio con sè stessi
-        for (Cella vertex : graph.vertexSet()) {
-            graph.addEdge(vertex, vertex);
-            graph.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
+        for (Cella vertex : grafo.vertexSet()) {
+            grafo.addEdge(vertex, vertex);
+            grafo.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
-        return graph;
     }
 
     /**
@@ -144,9 +134,6 @@ public class Grafo {
         stampaGrafo(mst, path_txt, path_image);
     }
 
-    public static void creaPercorsoMinimo(Graph<Cella, DefaultWeightedEdge> graph, String path_txt, String path_image) {
-
-    }
 
     /**
      * Metodo che permette di stampare a console un grafo (ovvero i vertici e le connessioni)

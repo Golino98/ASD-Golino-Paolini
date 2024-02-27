@@ -45,8 +45,7 @@ public class Griglia {
         this.agenti = agenti;
 
         generateObstacles();
-        generateAgents();
-
+        generateAgents(max);
     }
 
     public Cella[][] getGriglia() {
@@ -71,7 +70,7 @@ public class Griglia {
     /**
      * Metodo che permette di generare degli agenti (agente start stato 2, agente goal stato 3)
      */
-    public void generateAgents() {
+    public void generateAgents(int max) {
 
         int rigaStart = 0;
         int colonnaStart = 0;
@@ -96,7 +95,7 @@ public class Griglia {
                 foundGoal = cambiaStatoCella(rigaGoal, colonnaGoal, StatoCelle.LIBERA.getValore(), StatoCelle.AGENTE_GOAL.getValore());
             }
 
-            listaAgenti.add(new Agente(new Cella(rigaStart, colonnaStart, StatoCelle.AGENTE_START), new Cella(rigaGoal, colonnaGoal, StatoCelle.AGENTE_GOAL)));
+            listaAgenti.add(new Agente(new Cella(rigaStart, colonnaStart, StatoCelle.AGENTE_START), new Cella(rigaGoal, colonnaGoal, StatoCelle.AGENTE_GOAL), max));
         }
     }
 

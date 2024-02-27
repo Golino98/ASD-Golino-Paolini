@@ -10,8 +10,7 @@ public class Calcolatore {
         return Math.round((float) ((altezza * larghezza * percentuale) / 100));
     }
 
-    public static double calcolaEuristica(Cella init, Cella goal)
-    {
+    public static double calcolaEuristica(Cella init, Cella goal) {
         var grafoAgente = Grafo.grafo;
 
         grafoAgente.addVertex(init);
@@ -20,7 +19,6 @@ public class Calcolatore {
         Grafo.creaConnessioni(goal, grafoAgente);
 
         DijkstraShortestPath<Cella, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(grafoAgente);
-
         return dijkstraShortestPath.getPathWeight(init, goal);
     }
 }

@@ -22,7 +22,7 @@ public class Agente {
 
     private static int i = 1;
 
-    public Agente(Cella cellaStart, Cella cellaGoal) {
+    public Agente(Cella cellaStart, Cella cellaGoal, int max) {
 
         this.cellaStart = cellaStart;
         this.cellaGoal = cellaGoal;
@@ -36,7 +36,7 @@ public class Agente {
 
         foundBest = false;
 
-        this.percorso.add(new VerticeTempo(cellaGoal,0));
+        this.percorso.add(new VerticeTempo(cellaGoal, max));
         this.percorso.add(new VerticeTempo(cellaStart,0));
     }
 
@@ -69,11 +69,9 @@ public class Agente {
     }
 
     public void aggiungiNodoPercorso(Cella cella, int t, Griglia g) {
-        percorso.remove();
+        percorso.remove(percorso.getLast());
         percorso.add(new VerticeTempo(cella,t));
-        percorso.add(new VerticeTempo(cellaStart,0));
-        percorso.getLast().setT(percorso.size()-1);
-
+        percorso.add(new VerticeTempo(cellaGoal, percorso.size()));
         g.cambiaStatoCella(cella.getRiga(), cella.getColonna(), StatoCelle.LIBERA.getValore(), StatoCelle.PERCORSO.getValore());
 
     }
