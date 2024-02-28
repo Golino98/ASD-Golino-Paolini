@@ -54,6 +54,9 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.setBackground(Color.BLUE);
                         break;
                     case 2:
+                        // Riga aggiunta in quanto anche un agente si trova effettivamente su una cella che in futuro può essere attraversata
+                        Vertice.aggiungiVertice(cella);
+
                         // Caso agente di partenza
                         int rigaStart = i;
                         int colonnaStart = j;
@@ -71,6 +74,9 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.add(labelStart);
                         break;
                     case 3:
+                        // Riga aggiunta in quanto anche un agente si trova effettivamente su una cella che in futuro può essere attraversata
+                        Vertice.aggiungiVertice(cella);
+
                         // Caso agente di destinazione
                         int rigaGoal = i;
                         int colonnaGoal = j;
@@ -85,8 +91,6 @@ public class GeneratoreGriglie extends JFrame {
                         labelEnd.setForeground(Color.BLACK); // Imposta il colore del testo
                         cellPanel.add(labelEnd);
                         break;
-                    case 4:
-                        // Altri casi non gestiti attualmente
                     default:
                         break;
                 }

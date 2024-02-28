@@ -1,12 +1,26 @@
 package it.asd.golino.paolini.classi;
 
 public class VerticeTempo {
+    // Cella di riferimento
     private Cella v;
+
+    // Istante temporale
     private int t;
+
+    // Valore della funzione score f, calcolata come la somme di g(v,t) + h(v,goal)
     private double f;
+
+    // Valore della funzione g, il costo più basso sinora calcolato per raggiungere il vertice v dall’istante t partendo da istante 0
     private double g;
+
+    // Padre da cui si è arrivati (nell'albero dei cammini minimi, cioè di costo minimo)
     private VerticeTempo p;
 
+    /**
+     * Metodo costruttore per la classe {@link VerticeTempo}
+     * @param v cella di riferimento
+     * @param t istante temporale corrente
+     */
     public VerticeTempo(Cella v, int t) {
         this.v = v;
         this.t = t;
@@ -16,16 +30,8 @@ public class VerticeTempo {
         return v;
     }
 
-    public void setV(Cella v) {
-        this.v = v;
-    }
-
     public int getT() {
         return t;
-    }
-
-    public void setT(int t) {
-        this.t = t;
     }
 
     public double getF() {
@@ -50,11 +56,5 @@ public class VerticeTempo {
 
     public void setP(VerticeTempo p) {
         this.p = p;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "" + this.v.toString() + " istante t=" + this.t + " ---";
     }
 }

@@ -54,6 +54,8 @@ public class ReachGoal {
 
         // Algoritmo A*
         while (!(open.isEmpty())) {
+
+            // Prendo il VerticeTempo con il minor valore della funzione f
             var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
             open.remove(lowest_f_score_state);
             closed.add(lowest_f_score_state);
@@ -86,39 +88,41 @@ public class ReachGoal {
                         traversable = true;
 
                         // Controllo se la cella è già stata attraversata da altri agenti
-                        for (Agente a : sigma) {
-                            if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(closed.get(index).getV().toString()) ||
-                                    (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString()) &&
-                                            a.getCellaPercorso(t).toString().equalsIgnoreCase(closed.get(index).getV().toString()))) {
-                                traversable = false;
-                            }
-                        }
-
-                        VerticeTempo n_t1 = null;
-                        for (var control : v_t) {
-                            if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
-                                n_t1 = control;
-                                break;
-                            }
-                        }
-
-                        if (n_t1 != null) {
-                            double w = G.getEdge(lowest_f_score_state.getV(), n) != null ?
-                                    G.getEdgeWeight(G.getEdge(lowest_f_score_state.getV(), n)) :
-                                    G.getEdgeWeight(G.getEdge(n, lowest_f_score_state.getV()));
-
-                            if (traversable) {
-                                if (lowest_f_score_state.getG() + w < n_t1.getG()) {
-                                    n_t1.setP(lowest_f_score_state);
-                                    n_t1.setG(lowest_f_score_state.getG() + w);
-                                    n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, goal));
-                                }
-
-                                if (!open.contains(n_t1)) {
-                                    open.add(n_t1);
-                                }
-                            }
-                        }
+//                        for (Agente a : Griglia.listaAgenti) {
+//                            if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+//                                    (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString()) &&
+//                                            (a.getCellaPercorso(t).toString().equalsIgnoreCase(n.toString())))) {
+//                                traversable = false;
+//                            }
+//                        }
+//
+//                        VerticeTempo n_t1 = null;
+//                        for (var control : v_t) {
+//                            if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
+//                                n_t1 = control;
+//                                break;
+//                            }
+//                        }
+//
+//                        if (traversable) {
+//                            if (n_t1 != null) {
+//                                double w = G.getEdge(lowest_f_score_state.getV(), n) != null ?
+//                                        G.getEdgeWeight(G.getEdge(lowest_f_score_state.getV(), n)) :
+//                                        G.getEdgeWeight(G.getEdge(n, lowest_f_score_state.getV()));
+//
+//
+//                                if (lowest_f_score_state.getG() + w < n_t1.getG()) {
+//                                    n_t1.setP(lowest_f_score_state);
+//                                    n_t1.setG(lowest_f_score_state.getG() + w);
+//                                    n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, goal));
+//                                }
+//
+//                                if (!open.contains(n_t1)) {
+//                                    open.add(n_t1);
+//                                }
+//
+//                            }
+//                        }
                     }
                 }
             }
