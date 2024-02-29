@@ -61,9 +61,9 @@ public class ReachGoal {
             closed.add(lowest_f_score_state);
 
             if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
-                var percorso = reconstructPath(init, goal, lowest_f_score_state.getP(), lowest_f_score_state.getT(), griglia);
-                sigma.add(percorso);
-                return percorso;
+                //var percorso = reconstructPath(init, goal, lowest_f_score_state.getP(), lowest_f_score_state.getT(), griglia);
+                //sigma.add(percorso);
+                //return percorso;
             }
 
             int t = lowest_f_score_state.getT();
@@ -72,7 +72,7 @@ public class ReachGoal {
 
             if (t < max) {
                 for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
-                    if (G.getEdgeTarget(edge) != lowest_f_score_state.getV()) {
+                    if (!G.getEdgeTarget(edge).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())) {
                         n = G.getEdgeTarget(edge);
                     } else {
                         n = G.getEdgeSource(edge);
@@ -86,6 +86,11 @@ public class ReachGoal {
 
                     if (index == -1) {
                         traversable = true;
+
+                        for(Agente a : griglia.getListaAgenti())
+                        {
+
+                        }
 
                         // Controllo se la cella è già stata attraversata da altri agenti
 //                        for (Agente a : Griglia.listaAgenti) {
