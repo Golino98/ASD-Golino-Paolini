@@ -127,15 +127,6 @@ public class ReachGoal {
      * @return Agente rappresentante il percorso ottimale
      */
     private static Agente reconstructPath(Cella init, Cella goal, VerticeTempo P, int t, Griglia griglia) {
-        for (var a : Griglia.listaAgenti) {
-            if (a.getCellaStart().toString().equalsIgnoreCase(init.toString()) && a.getCellaGoal().toString().equalsIgnoreCase(goal.toString())) {
-                while (P.getV().toString().equalsIgnoreCase(init.toString())) {
-                    a.aggiungiNodoPercorso(P.getP().getV(), t, griglia);
-                    P = P.getP();
-                }
-                a.setFoundBest(true);
-            }
-        }
-        return null; // Non utilizzato
+        return null;
     }
 }
