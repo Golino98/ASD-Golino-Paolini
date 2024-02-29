@@ -38,6 +38,11 @@ public class Agente {
 
     }
 
+    public Cella cellaDiUnPercorso(int i)
+    {
+        return percorso[i];
+    }
+
     public Color getRandomColor() {
         return randomColor;
     }

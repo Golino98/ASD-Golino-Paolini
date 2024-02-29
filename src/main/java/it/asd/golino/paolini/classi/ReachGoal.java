@@ -87,47 +87,28 @@ public class ReachGoal {
                     if (index == -1) {
                         traversable = true;
 
-                        for(Agente a : griglia.getListaAgenti())
-                        {
-
+                        for (Agente a : griglia.getListaAgenti()) {
+                            if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+                                    (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+                                            && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+                                traversable = false;
+                            }
                         }
 
-                        // Controllo se la cella è già stata attraversata da altri agenti
-//                        for (Agente a : Griglia.listaAgenti) {
-//                            if (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-//                                    (a.getCellaPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString()) &&
-//                                            (a.getCellaPercorso(t).toString().equalsIgnoreCase(n.toString())))) {
-//                                traversable = false;
-//                            }
-//                        }
-//
-//                        VerticeTempo n_t1 = null;
-//                        for (var control : v_t) {
-//                            if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
-//                                n_t1 = control;
-//                                break;
-//                            }
-//                        }
-//
-//                        if (traversable) {
-//                            if (n_t1 != null) {
-//                                double w = G.getEdge(lowest_f_score_state.getV(), n) != null ?
-//                                        G.getEdgeWeight(G.getEdge(lowest_f_score_state.getV(), n)) :
-//                                        G.getEdgeWeight(G.getEdge(n, lowest_f_score_state.getV()));
-//
-//
-//                                if (lowest_f_score_state.getG() + w < n_t1.getG()) {
-//                                    n_t1.setP(lowest_f_score_state);
-//                                    n_t1.setG(lowest_f_score_state.getG() + w);
-//                                    n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, goal));
-//                                }
-//
-//                                if (!open.contains(n_t1)) {
-//                                    open.add(n_t1);
-//                                }
-//
-//                            }
-//                        }
+                        if (traversable) {
+                            VerticeTempo n_t1 = null;
+                            for (var control : v_t) {
+                                if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
+                                    n_t1 = control;
+                                    break;
+                                }
+                            }
+
+                            assert n_t1 != null;
+                            if (lowest_f_score_state.getG() + Calcolatore.calcolaEuristica(lowest_f_score_state.getV(), n) < n_t1.getG()) {
+                                // riga 33
+                            }
+                        }
                     }
                 }
             }
