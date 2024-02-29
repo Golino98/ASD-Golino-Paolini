@@ -51,7 +51,6 @@ public class Grafo {
 
         // Ordina la lista di agenti in base all'indice
         Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
-        var percorso = new ArrayList<>();
     }
 
     /**

@@ -10,7 +10,6 @@ public class Risolutore
         {
             // Modificare in quanto ritorna un agente
             Agente ag = ReachGoal.calculateReachGoal(grafo, a.getCellaStart(), a.getCellaGoal(), griglia.getMax(), griglia);
-            System.out.println(a.stampaPercorso());
         }
     }
 }

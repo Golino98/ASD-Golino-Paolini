@@ -70,13 +70,20 @@ public class ReachGoal {
             index = -1;
             Cella n;
 
+            for(var ag : Griglia.listaAgenti)
+            {
+                G.addVertex(ag.getCellaStart());
+                G.addVertex(ag.getCellaGoal());
+                Grafo.creaConnessioni(ag.getCellaStart(),G);
+                Grafo.creaConnessioni(ag.getCellaGoal(),G);
+            }
+
             if (t < max) {
-                for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
-                    if (!G.getEdgeTarget(edge).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())) {
-                        n = G.getEdgeTarget(edge);
-                    } else {
-                        n = G.getEdgeSource(edge);
-                    }
+                for (var edge : G.edgesOf(lowest_f_score_state.getV()))
+                {
+                    n = G.getEdgeTarget(edge);
+                    Grafo.creaConnessioni(n, G);
+
 
                     for (var v : closed) {
                         if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
@@ -105,9 +112,28 @@ public class ReachGoal {
                             }
 
                             assert n_t1 != null;
-                            if (lowest_f_score_state.getG() + Calcolatore.calcolaEuristica(lowest_f_score_state.getV(), n) < n_t1.getG()) {
-                                // riga 33
+                            // calcolare w
+                            var edge_v_n = Grafo.grafo.getEdge(lowest_f_score_state.getV(), n);
+                            var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
+                            if (lowest_f_score_state.getG() + costo_edge_v_n < n_t1.getG()) {
+                                n_t1.setP(lowest_f_score_state);
+                                n_t1.setG(lowest_f_score_state.getG() + costo_edge_v_n);
+                                n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, goal));
                             }
+
+                            boolean inOpen = false;
+                            VerticeTempo trovatoInOpen = null;
+
+                            // ERRORE QUI, RIGA 40
+                            for (var vertice : open) {
+                                if (vertice.getV().toString().equalsIgnoreCase(n_t1.getV().toString()) && vertice.getT() == t + 1) {
+                                    inOpen = true;
+                                    trovatoInOpen = vertice;
+                                    break;
+                                }
+                            }
+
+                            if (!inOpen) open.add(trovatoInOpen);
                         }
                     }
                 }
