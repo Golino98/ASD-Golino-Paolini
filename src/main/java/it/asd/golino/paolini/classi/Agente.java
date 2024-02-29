@@ -17,10 +17,8 @@ public class Agente {
 
     private final Color randomColor;
 
-    private boolean foundBest;
-    private final LinkedList<VerticeTempo> percorso = new LinkedList<>();
-
     private static int i = 1;
+    private Cella[] percorso;
 
     public Agente(Cella cellaStart, Cella cellaGoal, int max) {
 
@@ -34,10 +32,10 @@ public class Agente {
         Random rand = new Random();
         this.randomColor = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 
-        foundBest = false;
+        // Il percorso è semplicemente un array di celle dove quella iniziale è l'init
+        this.percorso = new Cella[max];
+        percorso[0] = cellaStart;
 
-        this.percorso.add(new VerticeTempo(cellaGoal, max));
-        this.percorso.add(new VerticeTempo(cellaStart,0));
     }
 
     public Color getRandomColor() {
@@ -55,40 +53,4 @@ public class Agente {
     public int getIndice() {
         return indice;
     }
-
-    public boolean isFoundBest() {
-        return foundBest;
-    }
-
-    public void setFoundBest(boolean foundBest) {
-        this.foundBest = foundBest;
-    }
-
-    public Queue<VerticeTempo> getPercorso() {
-        return percorso;
-    }
-
-    public void aggiungiNodoPercorso(Cella cella, int t, Griglia g) {
-        percorso.remove(percorso.getLast());
-        percorso.add(new VerticeTempo(cella,t));
-        percorso.add(new VerticeTempo(cellaGoal, percorso.size()));
-        g.cambiaStatoCella(cella.getRiga(), cella.getColonna(), StatoCelle.LIBERA.getValore(), StatoCelle.PERCORSO.getValore());
-
-    }
-
-    public Cella getCellaPercorso(int t)
-    {
-        return percorso.get(t).getV();
-    }
-
-    public String stampaPercorso()
-    {
-        String result = "";
-        for(var cella : percorso)
-        {
-            result = result.concat(cella.toString() + " - - - ");
-        }
-        return result;
-    }
-
 }
