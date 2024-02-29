@@ -1,5 +1,6 @@
 package it.asd.golino.paolini.utility;
 
+import it.asd.golino.paolini.Main;
 import it.asd.golino.paolini.classi.Cella;
 import it.asd.golino.paolini.classi.Grafo;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -11,14 +12,9 @@ public class Calcolatore {
     }
 
     public static double calcolaEuristica(Cella init, Cella goal) {
-        var grafoAgente = Grafo.grafo;
+        var distanza1 = Math.pow(init.getRiga() - goal.getRiga(),2);
+        var distanza2 = Math.pow(init.getColonna() - goal.getColonna(),2);
 
-        grafoAgente.addVertex(init);
-        grafoAgente.addVertex(goal);
-        Grafo.creaConnessioni(init, grafoAgente);
-        Grafo.creaConnessioni(goal, grafoAgente);
-
-        DijkstraShortestPath<Cella, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(grafoAgente);
-        return dijkstraShortestPath.getPathWeight(init, goal);
+        return Math.sqrt(distanza1+distanza2);
     }
 }
