@@ -40,13 +40,9 @@ public class Grafo {
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
      */
     public static void creaGrafo() {
-        Vertice.getVertici().forEach(grafo::addVertex);
         for (var s : grafo.vertexSet()) {
             creaConnessioni(s, grafo);
         }
-
-        // Libero lo spazio dei vertici in quanto ora son tutti memorizzati nel vertexSet del mio grafo
-        Vertice.eliminaTuttiVertici();
 
         stampaGrafo(grafo, PATH_CONNESSIONE_CELLE_LIBERE, PATH_ORIENTED_GRAPH_IMAGE);
 

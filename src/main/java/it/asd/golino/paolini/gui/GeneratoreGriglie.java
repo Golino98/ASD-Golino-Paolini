@@ -48,14 +48,13 @@ public class GeneratoreGriglie extends JFrame {
                 // Switch basato sullo stato della cella
                 switch (cella.getCellStatus().getValore()) {
                     case 0:
-                        Vertice.aggiungiVertice(cella);
+                        Grafo.grafo.addVertex(cella);
                         break;
                     case 1:
                         cellPanel.setBackground(Color.BLUE);
                         break;
                     case 2:
-                        // Riga aggiunta in quanto anche un agente si trova effettivamente su una cella che in futuro può essere attraversata
-                        Vertice.aggiungiVertice(cella);
+                        Grafo.grafo.addVertex(cella);
 
                         // Caso agente di partenza
                         int rigaStart = i;
@@ -74,8 +73,7 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.add(labelStart);
                         break;
                     case 3:
-                        // Riga aggiunta in quanto anche un agente si trova effettivamente su una cella che in futuro può essere attraversata
-                        Vertice.aggiungiVertice(cella);
+                        Grafo.grafo.addVertex(cella);
 
                         // Caso agente di destinazione
                         int rigaGoal = i;
