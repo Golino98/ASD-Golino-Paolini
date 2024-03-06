@@ -49,6 +49,8 @@ public class ReachGoal {
                 break;
             }
         }
+        open.stream().findFirst().get().setG(0);
+        open.stream().findFirst().get().setF(Calcolatore.calcolaEuristica(init, goal));
         v_t.get(index).setG(0);
         v_t.get(index).setF(Calcolatore.calcolaEuristica(init, goal));
 
@@ -70,13 +72,6 @@ public class ReachGoal {
             index = -1;
             Cella n;
 
-            for(var ag : Griglia.listaAgenti)
-            {
-                G.addVertex(ag.getCellaStart());
-                G.addVertex(ag.getCellaGoal());
-                Grafo.creaConnessioni(ag.getCellaStart(),G);
-                Grafo.creaConnessioni(ag.getCellaGoal(),G);
-            }
 
             if (t < max) {
                 for (var edge : G.edgesOf(lowest_f_score_state.getV()))
@@ -84,10 +79,10 @@ public class ReachGoal {
                     n = G.getEdgeTarget(edge);
                     Grafo.creaConnessioni(n, G);
 
-
                     for (var v : closed) {
                         if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
                             index = closed.indexOf(v);
+                            break;
                         }
                     }
 
@@ -122,18 +117,16 @@ public class ReachGoal {
                             }
 
                             boolean inOpen = false;
-                            VerticeTempo trovatoInOpen = null;
 
                             // ERRORE QUI, RIGA 40
                             for (var vertice : open) {
                                 if (vertice.getV().toString().equalsIgnoreCase(n_t1.getV().toString()) && vertice.getT() == t + 1) {
                                     inOpen = true;
-                                    trovatoInOpen = vertice;
                                     break;
                                 }
                             }
 
-                            if (!inOpen) open.add(trovatoInOpen);
+                            if (!inOpen) open.add(n_t1);
                         }
                     }
                 }

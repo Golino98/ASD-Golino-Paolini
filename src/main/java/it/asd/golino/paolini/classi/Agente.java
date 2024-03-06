@@ -33,14 +33,8 @@ public class Agente {
         this.randomColor = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 
         // Il percorso è semplicemente un array di celle dove quella iniziale è l'init
-        this.percorso = new Cella[max];
+        percorso = new Cella[max];
         percorso[0] = cellaStart;
-
-        for (int i = 1; i < max; i++)
-        {
-            percorso[i] = new Cella(-1,-1,StatoCelle.PERCORSO);
-        }
-
     }
 
     public Cella cellaDiUnPercorso(int i)
