@@ -21,7 +21,7 @@ public class ReachGoal {
      * @param griglia Griglia di riferimento
      * @return Agente che rappresenta il percorso ottimale
      */
-    public static Agente calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Cella init, Cella goal, int max, Griglia griglia) {
+    public static void calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Agente ag, Cella init, Cella goal, int max, Griglia griglia) {
         boolean traversable;
         int index = 0;
 
@@ -63,9 +63,7 @@ public class ReachGoal {
             closed.add(lowest_f_score_state);
 
             if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
-                //var percorso = reconstructPath(init, goal, lowest_f_score_state.getP(), lowest_f_score_state.getT(), griglia);
-                //sigma.add(percorso);
-                //return percorso;
+                reconstructPath(lowest_f_score_state, ag);
             }
 
             int t = lowest_f_score_state.getT();
@@ -74,8 +72,7 @@ public class ReachGoal {
 
 
             if (t < max) {
-                for (var edge : G.edgesOf(lowest_f_score_state.getV()))
-                {
+                for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
                     n = G.getEdgeTarget(edge);
                     Grafo.creaConnessioni(n, G);
 
@@ -90,10 +87,15 @@ public class ReachGoal {
                         traversable = true;
 
                         for (Agente a : griglia.getListaAgenti()) {
-                            if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-                                    (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-                                            && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
-                                traversable = false;
+                            try {
+
+                                if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+                                        (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+                                                && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+                                    traversable = false;
+                                }
+                            } catch (ArrayIndexOutOfBoundsException ex) {
+                                break;
                             }
                         }
 
@@ -118,34 +120,29 @@ public class ReachGoal {
 
                             boolean inOpen = false;
 
-                            // ERRORE QUI, RIGA 40
                             for (var vertice : open) {
                                 if (vertice.getV().toString().equalsIgnoreCase(n_t1.getV().toString()) && vertice.getT() == t + 1) {
                                     inOpen = true;
                                     break;
                                 }
                             }
-
                             if (!inOpen) open.add(n_t1);
                         }
                     }
                 }
             }
         }
-        return null; // RITORNO ERRORE
     }
 
-    /**
-     * Ricostruisce il percorso ottimale da un vertice temporale iniziale al vertice di destinazione.
-     *
-     * @param init    Cella di partenza
-     * @param goal    Cella di destinazione
-     * @param P       Vertice temporale precedente
-     * @param t       Tempo
-     * @param griglia Griglia di riferimento
-     * @return Agente rappresentante il percorso ottimale
-     */
-    private static Agente reconstructPath(Cella init, Cella goal, VerticeTempo P, int t, Griglia griglia) {
-        return null;
+    private static void reconstructPath(VerticeTempo verticeTempo, Agente agente) {
+        for (int i = verticeTempo.getT(); i < agente.getMax(); i++) {
+            agente.settaCellaDiPercorso(verticeTempo.getV(), i);
+        }
+
+        for (int i = verticeTempo.getT() - 1; i >= 0; i--) {
+            agente.settaCellaDiPercorso(verticeTempo.getP().getV(), i);
+            verticeTempo = verticeTempo.getP();
+        }
+
     }
 }

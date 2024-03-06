@@ -1,5 +1,6 @@
 package it.asd.golino.paolini.classi;
 
+import it.asd.golino.paolini.utility.Costanti;
 import it.asd.golino.paolini.utility.StatoCelle;
 
 import java.awt.*;
@@ -14,6 +15,7 @@ public class Agente {
     private final Cella cellaStart;
     private final Cella cellaGoal;
     private final int indice;
+    private final int max;
 
     private final Color randomColor;
 
@@ -33,8 +35,14 @@ public class Agente {
         this.randomColor = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 
         // Il percorso è semplicemente un array di celle dove quella iniziale è l'init
+        this.max =max;
         percorso = new Cella[max];
         percorso[0] = cellaStart;
+
+        for(int i = 1; i < max; i++)
+        {
+            percorso[i] = new Cella(-1,-1, StatoCelle.PERCORSO);
+        }
     }
 
     public Cella cellaDiUnPercorso(int i)
@@ -42,8 +50,18 @@ public class Agente {
         return percorso[i];
     }
 
+    public void settaCellaDiPercorso(Cella cella, int indice)
+    {
+        percorso[indice] = cella;
+    }
+
     public Color getRandomColor() {
         return randomColor;
+    }
+
+    public int getMax()
+    {
+        return this.max;
     }
 
     public Cella getCellaStart() {

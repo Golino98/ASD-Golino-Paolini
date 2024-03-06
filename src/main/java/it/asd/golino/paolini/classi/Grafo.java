@@ -40,8 +40,16 @@ public class Grafo {
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
      */
     public static void creaGrafo() {
+
         for (var s : grafo.vertexSet()) {
             creaConnessioni(s, grafo);
+        }
+
+        for (Agente a : Griglia.listaAgenti) {
+            grafo.addVertex(a.getCellaStart());
+            grafo.addVertex(a.getCellaGoal());
+            Grafo.creaConnessioni(a.getCellaStart(), grafo);
+            Grafo.creaConnessioni(a.getCellaGoal(), grafo);
         }
 
         stampaGrafo(grafo, PATH_CONNESSIONE_CELLE_LIBERE, PATH_ORIENTED_GRAPH_IMAGE);
@@ -171,6 +179,8 @@ public class Grafo {
             // Flusha e chiude il fileWriter per garantire che i dati siano scritti correttamente nel file
             fileWriter.flush();
             fileWriter.close();
+            consoleWriter.flush();
+            consoleWriter.close();
 
             JGraphXAdapter<Cella, DefaultWeightedEdge> graphAdapter = new JGraphXAdapter<>(grafo);
 

@@ -12,9 +12,14 @@ public class Calcolatore {
     }
 
     public static double calcolaEuristica(Cella init, Cella goal) {
-        var distanza1 = Math.pow(init.getRiga() - goal.getRiga(),2);
-        var distanza2 = Math.pow(init.getColonna() - goal.getColonna(),2);
+        var grafoAgente = Grafo.grafo;
 
-        return Math.sqrt(distanza1+distanza2);
+        grafoAgente.addVertex(init);
+        grafoAgente.addVertex(goal);
+        Grafo.creaConnessioni(init, grafoAgente);
+        Grafo.creaConnessioni(goal, grafoAgente);
+
+        DijkstraShortestPath<Cella, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(grafoAgente);
+        return dijkstraShortestPath.getPathWeight(init, goal);
     }
 }
