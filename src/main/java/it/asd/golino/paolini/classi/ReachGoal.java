@@ -28,9 +28,8 @@ public class ReachGoal {
 
             if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
                 reconstructPath(lowest_f_score_state, ag);
-                break; // Termina il ciclo quando raggiungi la destinazione
+                return; // Termina il ciclo quando raggiungi la destinazione
             }
-
             expandState(G, ag, lowest_f_score_state, max, griglia, v_t, open, closed);
         }
     }
@@ -52,15 +51,8 @@ public class ReachGoal {
     }
 
     private static void initializeStartingVertex(ArrayList<VerticeTempo> open, ArrayList<VerticeTempo> v_t, Cella init, Cella goal) {
-        for (var v : v_t) {
-            if (v.getV().equals(init) && v.getT() == 0) {
-                open.getFirst().setG(0);
-                open.getFirst().setF(Calcolatore.calcolaEuristica(init, goal));
-                v.setG(0);
-                v.setF(Calcolatore.calcolaEuristica(init, goal));
-                break;
-            }
-        }
+        open.getFirst().setG(0);
+        open.getFirst().setF(Calcolatore.calcolaEuristica(init, goal));
     }
 
     private static void expandState(Graph<Cella, DefaultWeightedEdge> G, Agente ag, VerticeTempo currentState,
@@ -95,13 +87,13 @@ public class ReachGoal {
     private static boolean isTraversable(Agente ag, Cella n, VerticeTempo currentState, int t, Griglia griglia) {
         for (Agente a : griglia.getListaAgenti()) {
             try {
-                if (a.cellaDiUnPercorso(t).equals(n) ||
-                        (a.cellaDiUnPercorso(t).equals(currentState.getV()) &&
-                                a.cellaDiUnPercorso(t - 1).equals(n))) {
+                if (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()) ||
+                        (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(currentState.getV().toString()) &&
+                                a.cellaDiUnPercorso(t - 1).toString().equalsIgnoreCase(n.toString()))) {
                     return false;
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
-                break;
+                continue;
             }
         }
         return true;

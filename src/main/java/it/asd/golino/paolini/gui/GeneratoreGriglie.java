@@ -55,7 +55,6 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.setBackground(Color.BLUE);
                         break;
                     case 2:
-                        Grafo.grafo.addVertex(cella);
 
                         // Caso agente di partenza
                         int rigaStart = i;
@@ -74,7 +73,6 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.add(labelStart);
                         break;
                     case 3:
-                        Grafo.grafo.addVertex(cella);
 
                         // Caso agente di destinazione
                         int rigaGoal = i;
@@ -98,7 +96,7 @@ public class GeneratoreGriglie extends JFrame {
         }
 
         // Crea un grafo basato sulla griglia
-        Grafo.creaGrafo();
+        Grafo.creaGrafo(altezza, larghezza);
 
         // Aggiungi il pannello della griglia alla finestra
         dialogGrid.add(gridPanel);

@@ -12,19 +12,14 @@ public class Calcolatore {
         return Math.round((float) ((altezza * larghezza * percentuale) / 100));
     }
 
-    public static double calcolaEuristica(Cella init, Cella goal)
-    {
+    public static double calcolaEuristica(Cella init, Cella goal) {
         var grafoAgente = Grafo.grafo;
 
-        for(var agente : Griglia.listaAgenti)
-        {
-            if(agente.getCellaStart().getRiga()== init.getRiga() &&
-               agente.getCellaStart().getColonna()== init.getColonna() &&
-               agente.getCellaGoal().getRiga() == goal.getRiga() &&
-               agente.getCellaGoal().getColonna() == goal.getColonna())
-            {
-                break;
-            }else
+        for (var agente : Griglia.listaAgenti) {
+            if (!(agente.getCellaStart().getRiga() == init.getRiga() &&
+                    agente.getCellaStart().getColonna() == init.getColonna() &&
+                    agente.getCellaGoal().getRiga() == goal.getRiga() &&
+                    agente.getCellaGoal().getColonna() == goal.getColonna()))
             {
                 grafoAgente.addVertex(agente.getCellaStart());
                 grafoAgente.addVertex(agente.getCellaGoal());

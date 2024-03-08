@@ -36,20 +36,22 @@ public class Grafo {
     // Creazione di un grafo direzionato pesato utilizzando JGraphT
     public static Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
+    protected static int altezzaSa;
+    protected static int larghezzaSa;
+
     /**
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
      */
-    public static void creaGrafo() {
+    public static void creaGrafo(int altezza, int larghezza) {
 
-        for (var s : grafo.vertexSet()) {
-            creaConnessioni(s, grafo);
-        }
-
+        altezzaSa = altezza;
+        larghezzaSa = larghezza;
         for (Agente a : Griglia.listaAgenti) {
             grafo.addVertex(a.getCellaStart());
             grafo.addVertex(a.getCellaGoal());
-            Grafo.creaConnessioni(a.getCellaStart(), grafo);
-            Grafo.creaConnessioni(a.getCellaGoal(), grafo);
+        }
+        for (var s : grafo.vertexSet()) {
+            creaConnessioni(s, grafo);
         }
 
         stampaGrafo(grafo, PATH_CONNESSIONE_CELLE_LIBERE, PATH_ORIENTED_GRAPH_IMAGE);
@@ -72,17 +74,31 @@ public class Grafo {
         ArrayList<Cella> diagonali = new ArrayList<>();
         ArrayList<Cella> cardinali = new ArrayList<>();
 
-        // Crea le celle adiacenti in diagonale
-        diagonali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna() + 1, StatoCelle.LIBERA));
-        diagonali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna() + 1, StatoCelle.LIBERA));
-        diagonali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna() - 1, StatoCelle.LIBERA));
-        diagonali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna() - 1, StatoCelle.LIBERA));
+        if (!(vertice.getRiga() - 1 < 0 || vertice.getColonna() + 1 >= larghezzaSa))
+            diagonali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna() + 1, StatoCelle.LIBERA));
 
-        // Crea le celle adiacenti in modo cardinale
-        cardinali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna(), StatoCelle.LIBERA));
-        cardinali.add(new Cella(vertice.getRiga(), vertice.getColonna() + 1, StatoCelle.LIBERA));
-        cardinali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna(), StatoCelle.LIBERA));
-        cardinali.add(new Cella(vertice.getRiga(), vertice.getColonna() - 1, StatoCelle.LIBERA));
+        if (vertice.getColonna() + 1 < larghezzaSa)
+            diagonali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna() + 1, StatoCelle.LIBERA));
+
+        if (vertice.getRiga() + 1 < altezzaSa && vertice.getColonna() - 1 >= 0)
+            diagonali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna() - 1, StatoCelle.LIBERA));
+
+        if (!(vertice.getRiga() - 1 < 0 || vertice.getColonna() - 1 < 0))
+            diagonali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna() - 1, StatoCelle.LIBERA));
+
+// Crea le celle adiacenti in modo cardinale
+        if (vertice.getRiga() - 1 >= 0)
+            cardinali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna(), StatoCelle.LIBERA));
+
+        if (vertice.getColonna() + 1 < larghezzaSa)
+            cardinali.add(new Cella(vertice.getRiga(), vertice.getColonna() + 1, StatoCelle.LIBERA));
+
+        if (vertice.getRiga() + 1 < altezzaSa)
+            cardinali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna(), StatoCelle.LIBERA));
+
+        if (vertice.getColonna() - 1 >= 0)
+            cardinali.add(new Cella(vertice.getRiga(), vertice.getColonna() - 1, StatoCelle.LIBERA));
+
 
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in diagonale
         for (Cella diagonale : diagonali) {
@@ -110,6 +126,7 @@ public class Grafo {
             grafo.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
     }
+
 
     /**
      * Creazione dell'albero dei cammini minimi tramite Kruskal (solo delle celle attraversabili)
