@@ -81,30 +81,32 @@ public class ReachGoal {
     }
 
     private static boolean isCellInClosedList(Cella cella, int t, ArrayList<VerticeTempo> closed) {
-        return closed.stream().anyMatch(v -> v.getV().equals(cella) && v.getT() == t);
+        return closed.stream().anyMatch(v -> v.getV().toString().equalsIgnoreCase(cella.toString()) && v.getT() == t);
     }
 
     private static boolean isTraversable(Agente ag, Cella n, VerticeTempo currentState, int t, Griglia griglia) {
         for (Agente a : griglia.getListaAgenti()) {
-            try {
-                if (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()) ||
-                        (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(currentState.getV().toString()) &&
-                                a.cellaDiUnPercorso(t - 1).toString().equalsIgnoreCase(n.toString()))) {
-                    return false;
+            if (ag.getCellaGoal() != a.getCellaGoal()) {
+                try {
+                    if (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()) ||
+                            (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(currentState.getV().toString()) &&
+                                    a.cellaDiUnPercorso(t - 1).toString().equalsIgnoreCase(n.toString()))) {
+                        return false;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    continue;
                 }
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                continue;
             }
         }
         return true;
     }
 
     private static VerticeTempo findVerticeTempo(ArrayList<VerticeTempo> v_t, Cella cella, int t) {
-        return v_t.stream().filter(v -> v.getV().equals(cella) && v.getT() == t).findFirst().orElse(null);
+        return v_t.stream().filter(v -> v.getV().toString().equalsIgnoreCase(cella.toString()) && v.getT() == t).findFirst().orElse(null);
     }
 
     private static void updateOpenList(ArrayList<VerticeTempo> open, VerticeTempo n_t1) {
-        boolean inOpen = open.stream().anyMatch(vertice -> vertice.getV().equals(n_t1.getV()) && vertice.getT() == n_t1.getT());
+        boolean inOpen = open.stream().anyMatch(vertice -> vertice.getV().toString().equalsIgnoreCase(n_t1.getV().toString()) && vertice.getT() == n_t1.getT());
         if (!inOpen) open.add(n_t1);
     }
 
