@@ -59,7 +59,6 @@ public class ReachGoal {
             index = -1;
             Cella n;
 
-            // NECESSARIO CAPIRE QUANDO AGGIORNARE IL t
             if (t < max) {
                 if (G.containsVertex(lowest_f_score_state.getV())) {
                     for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
