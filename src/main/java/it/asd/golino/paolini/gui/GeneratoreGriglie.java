@@ -23,7 +23,7 @@ public class GeneratoreGriglie extends JFrame {
         int altezza = griglia.getAltezza();
         int larghezza = griglia.getLarghezza();
 
-        // Ottieni la matrice delle celle e la lista degli agenti
+        // Ottieni la lista degli agenti
         Cella[][] grid = griglia.getGriglia();
         ArrayList<Agente> listaAgenti = griglia.getListaAgenti();
 
@@ -41,7 +41,7 @@ public class GeneratoreGriglie extends JFrame {
         // Ciclo attraverso ogni cella nella griglia
         for (int i = 0; i < altezza; i++) {
             for (int j = 0; j < larghezza; j++) {
-                Cella cella = grid[i][j];
+                Cella cella = griglia.getCella(i,j);
                 JPanel cellPanel = new JPanel();
                 cellPanel.setPreferredSize(new Dimension(60, 60));
                 cellPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -56,6 +56,7 @@ public class GeneratoreGriglie extends JFrame {
                         break;
                     case 2:
 
+                        Grafo.grafo.addVertex(cella);
                         // Caso agente di partenza
                         int rigaStart = i;
                         int colonnaStart = j;
@@ -73,6 +74,8 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.add(labelStart);
                         break;
                     case 3:
+
+                        Grafo.grafo.addVertex(cella);
 
                         // Caso agente di destinazione
                         int rigaGoal = i;

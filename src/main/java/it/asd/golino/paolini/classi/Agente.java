@@ -20,7 +20,7 @@ public class Agente {
     private final Color randomColor;
 
     private static int i = 1;
-    private Cella[] percorso;
+    private final Cella[] percorso;
 
     public Agente(Cella cellaStart, Cella cellaGoal, int max) {
 
@@ -35,23 +35,20 @@ public class Agente {
         this.randomColor = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 
         // Il percorso è semplicemente un array di celle dove quella iniziale è l'init
-        this.max =max;
+        this.max = max;
         percorso = new Cella[max];
         percorso[0] = cellaStart;
 
-        for(int i = 1; i < max; i++)
-        {
-            percorso[i] = new Cella(-1,-1, StatoCelle.PERCORSO);
+        for (int i = 1; i < max; i++) {
+            percorso[i] = new Cella(-1, -1, StatoCelle.LIBERA);
         }
     }
 
-    public Cella cellaDiUnPercorso(int i)
-    {
+    public Cella cellaDiUnPercorso(int i) {
         return percorso[i];
     }
 
-    public void settaCellaDiPercorso(Cella cella, int indice)
-    {
+    public void settaCellaDiPercorso(Cella cella, int indice) {
         percorso[indice] = cella;
     }
 
@@ -59,8 +56,7 @@ public class Agente {
         return randomColor;
     }
 
-    public int getMax()
-    {
+    public int getMax() {
         return this.max;
     }
 
@@ -75,4 +71,14 @@ public class Agente {
     public int getIndice() {
         return indice;
     }
+
+    public String stampaPercorso() {
+        String res = "Agente " + this.indice + ".\n";
+        for (int i = 0; i < max; i++) {
+            res = res.concat(percorso[i].toString());
+        }
+        res = res.concat("\n");
+        return res;
+    }
+
 }

@@ -46,10 +46,7 @@ public class Grafo {
 
         altezzaSa = altezza;
         larghezzaSa = larghezza;
-        for (Agente a : Griglia.listaAgenti) {
-            grafo.addVertex(a.getCellaStart());
-            grafo.addVertex(a.getCellaGoal());
-        }
+
         for (var s : grafo.vertexSet()) {
             creaConnessioni(s, grafo);
         }
@@ -58,9 +55,6 @@ public class Grafo {
 
         // Creo l'albero dei cammini minimi delle celle senza considerare gli agenti
         creaAlberoCamminiMinimi(grafo, PATH_MST_NO_AGENTS_TXT, PATH_MST_NO_AGENTS_IMAGE);
-
-        // Ordina la lista di agenti in base all'indice
-        Griglia.listaAgenti.sort(Comparator.comparingInt(Agente::getIndice));
     }
 
     /**
@@ -74,19 +68,23 @@ public class Grafo {
         ArrayList<Cella> diagonali = new ArrayList<>();
         ArrayList<Cella> cardinali = new ArrayList<>();
 
+        // Controllo cella NE
         if (!(vertice.getRiga() - 1 < 0 || vertice.getColonna() + 1 >= larghezzaSa))
             diagonali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna() + 1, StatoCelle.LIBERA));
 
-        if (vertice.getColonna() + 1 < larghezzaSa)
+        // Controllo cella SE
+        if (vertice.getRiga() + 1 < altezzaSa && vertice.getColonna() + 1 < larghezzaSa)
             diagonali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna() + 1, StatoCelle.LIBERA));
 
+        // Controllo cella SO
         if (vertice.getRiga() + 1 < altezzaSa && vertice.getColonna() - 1 >= 0)
             diagonali.add(new Cella(vertice.getRiga() + 1, vertice.getColonna() - 1, StatoCelle.LIBERA));
 
+        // Controllo cella NO
         if (!(vertice.getRiga() - 1 < 0 || vertice.getColonna() - 1 < 0))
             diagonali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna() - 1, StatoCelle.LIBERA));
 
-// Crea le celle adiacenti in modo cardinale
+        // Crea le celle adiacenti in modo cardinale
         if (vertice.getRiga() - 1 >= 0)
             cardinali.add(new Cella(vertice.getRiga() - 1, vertice.getColonna(), StatoCelle.LIBERA));
 
@@ -103,7 +101,7 @@ public class Grafo {
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in diagonale
         for (Cella diagonale : diagonali) {
             for (Cella vertex : grafo.vertexSet()) {
-                if (diagonale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
+                if (diagonale.toString().equalsIgnoreCase(vertex.toString()) && !(grafo.containsEdge(vertex, vertice) || grafo.containsEdge(vertice, vertex))) {
                     grafo.addEdge(vertice, vertex);
                     grafo.setEdgeWeight(vertice, vertex, Costanti.DIAGONALE);
                 }
@@ -113,7 +111,7 @@ public class Grafo {
         // Crea i collegamenti tra il vertice corrente e le celle adiacenti in modo cardinale
         for (Cella cardinale : cardinali) {
             for (Cella vertex : grafo.vertexSet()) {
-                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !grafo.containsEdge(vertex, vertice)) {
+                if (cardinale.toString().equalsIgnoreCase(vertex.toString()) && !(grafo.containsEdge(vertex, vertice) || grafo.containsEdge(vertice, vertex))) {
                     grafo.addEdge(vertice, vertex);
                     grafo.setEdgeWeight(vertice, vertex, Costanti.MOSSA_CARDINALE);
                 }
@@ -126,7 +124,6 @@ public class Grafo {
             grafo.setEdgeWeight(vertex, vertex, Costanti.MOSSA_CARDINALE);
         }
     }
-
 
     /**
      * Creazione dell'albero dei cammini minimi tramite Kruskal (solo delle celle attraversabili)

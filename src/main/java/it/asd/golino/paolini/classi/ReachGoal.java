@@ -8,19 +8,43 @@ import java.util.*;
 
 public class ReachGoal {
 
-    public static void calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Agente ag, Cella init, Cella goal, int max, Griglia griglia) {
+    /**
+     * Calcola il percorso ottimale da un punto di partenza a un obiettivo su una griglia utilizzando l'algoritmo A*.
+     *
+     * @param G    Grafo rappresentante la griglia
+     * @param init Cella di partenza
+     * @param goal Cella di destinazione
+     * @param max  Massimo numero di passi consentiti
+     */
+    public static boolean calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Agente ag, Cella init, Cella goal, int max) {
+        boolean traversable;
+        int index = 0;
+
         // Liste per la gestione degli stati aperti e chiusi
         ArrayList<VerticeTempo> closed = new ArrayList<>(), open = new ArrayList<>();
         open.add(new VerticeTempo(init, 0));
 
         // Lista di vertici temporali (v_t)
-        ArrayList<VerticeTempo> v_t = initializeVerticeTempoList(G, max);
+        ArrayList<VerticeTempo> v_t = new ArrayList<>();
 
-        // Inizializzazione del vertice di partenza
-        initializeStartingVertex(open, v_t, init, goal);
+        // Creazione di vertici temporali per ogni vertice e tempo
+        for (int t = 0; t <= max; t++) {
+            for (var vertex : G.vertexSet()) {
+                VerticeTempo verticeTempo = new VerticeTempo(vertex, t);
+                if (t == 0 && vertex.toString().equalsIgnoreCase(init.toString())) {
+                    verticeTempo.setG(0);
+                    verticeTempo.setF(Calcolatore.calcolaEuristica(init, goal));
+                } else {
+                    verticeTempo.setG(Double.POSITIVE_INFINITY);
+                    verticeTempo.setP(null);
+                }
+                v_t.add(verticeTempo);
+            }
+        }
 
         // Algoritmo A*
-        while (!open.isEmpty()) {
+        while (!(open.isEmpty())) {
+
             // Prendo il VerticeTempo con il minor valore della funzione f
             var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
             open.remove(lowest_f_score_state);
@@ -28,95 +52,88 @@ public class ReachGoal {
 
             if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
                 reconstructPath(lowest_f_score_state, ag);
-                return; // Termina il ciclo quando raggiungi la destinazione
+                return true;
             }
-            expandState(G, ag, lowest_f_score_state, max, griglia, v_t, open, closed);
-        }
-    }
 
-    private static ArrayList<VerticeTempo> initializeVerticeTempoList(Graph<Cella, DefaultWeightedEdge> G, int max) {
-        ArrayList<VerticeTempo> v_t = new ArrayList<>();
+            int t = lowest_f_score_state.getT();
+            index = -1;
+            Cella n;
 
-        // Creazione di vertici temporali per ogni vertice e tempo
-        for (int t = 0; t <= max; t++) {
-            for (var vertex : G.vertexSet()) {
-                VerticeTempo verticeTempo = new VerticeTempo(vertex, t);
-                verticeTempo.setG(Double.POSITIVE_INFINITY);
-                verticeTempo.setP(null);
-                v_t.add(verticeTempo);
-            }
-        }
+            // NECESSARIO CAPIRE QUANDO AGGIORNARE IL t
+            if (t < max) {
+                if (G.containsVertex(lowest_f_score_state.getV())) {
+                    for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
+                        n = G.getEdgeTarget(edge);
+                        Grafo.creaConnessioni(n, G);
 
-        return v_t;
-    }
+                        for (var v : closed) {
+                            if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
+                                index = closed.indexOf(v);
+                                break;
+                            }
+                        }
 
-    private static void initializeStartingVertex(ArrayList<VerticeTempo> open, ArrayList<VerticeTempo> v_t, Cella init, Cella goal) {
-        open.getFirst().setG(0);
-        open.getFirst().setF(Calcolatore.calcolaEuristica(init, goal));
-    }
+                        if (index == -1) {
+                            traversable = true;
 
-    private static void expandState(Graph<Cella, DefaultWeightedEdge> G, Agente ag, VerticeTempo currentState,
-                                    int max, Griglia griglia, ArrayList<VerticeTempo> v_t, ArrayList<VerticeTempo> open, ArrayList<VerticeTempo> closed) {
-        int t = currentState.getT();
+                            for (Agente a : Griglia.listaAgenti) {
+                                try {
 
-        if (t < max) {
-            for (var edge : G.edgesOf(currentState.getV())) {
-                Cella n = G.getEdgeTarget(edge);
+                                    if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+                                            (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+                                                    && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+                                        traversable = false;
+                                    }
+                                } catch (ArrayIndexOutOfBoundsException ex) {
+                                    break;
+                                }
+                            }
 
-                if (!isCellInClosedList(n, t + 1, closed) && isTraversable(ag, n, currentState, t + 1, griglia)) {
-                    VerticeTempo n_t1 = findVerticeTempo(v_t, n, t + 1);
-                    assert n_t1 != null;
+                            if (traversable) {
+                                VerticeTempo n_t1 = null;
+                                for (var control : v_t) {
+                                    if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
+                                        n_t1 = control;
+                                        break;
+                                    }
+                                }
 
-                    // Calcolare w
-                    double costo_edge_v_n = G.getEdgeWeight(edge);
-                    if (currentState.getG() + costo_edge_v_n < n_t1.getG()) {
-                        n_t1.setP(currentState);
-                        n_t1.setG(currentState.getG() + costo_edge_v_n);
-                        n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, currentState.getV()));
-                        updateOpenList(open, n_t1);
+                                assert n_t1 != null;
+                                // calcolare w
+                                var edge_v_n = Grafo.grafo.getEdge(lowest_f_score_state.getV(), n);
+                                var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
+                                if (lowest_f_score_state.getG() + costo_edge_v_n < n_t1.getG()) {
+                                    n_t1.setP(lowest_f_score_state);
+                                    n_t1.setG(lowest_f_score_state.getG() + costo_edge_v_n);
+                                    n_t1.setF(n_t1.getG() + Calcolatore.calcolaEuristica(n, goal));
+                                }
+
+                                boolean inOpen = false;
+
+                                for (var vertice : open) {
+                                    if (vertice.getV().toString().equalsIgnoreCase(n_t1.getV().toString()) && vertice.getT() == t + 1) {
+                                        inOpen = true;
+                                        break;
+                                    }
+                                }
+                                if (!inOpen) open.add(n_t1);
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-
-    private static boolean isCellInClosedList(Cella cella, int t, ArrayList<VerticeTempo> closed) {
-        return closed.stream().anyMatch(v -> v.getV().toString().equalsIgnoreCase(cella.toString()) && v.getT() == t);
-    }
-
-    private static boolean isTraversable(Agente ag, Cella n, VerticeTempo currentState, int t, Griglia griglia) {
-        for (Agente a : griglia.getListaAgenti()) {
-            if (ag.getCellaGoal() != a.getCellaGoal()) {
-                try {
-                    if (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()) ||
-                            (a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(currentState.getV().toString()) &&
-                                    a.cellaDiUnPercorso(t - 1).toString().equalsIgnoreCase(n.toString()))) {
-                        return false;
-                    }
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    continue;
-                }
-            }
-        }
-        return true;
-    }
-
-    private static VerticeTempo findVerticeTempo(ArrayList<VerticeTempo> v_t, Cella cella, int t) {
-        return v_t.stream().filter(v -> v.getV().toString().equalsIgnoreCase(cella.toString()) && v.getT() == t).findFirst().orElse(null);
-    }
-
-    private static void updateOpenList(ArrayList<VerticeTempo> open, VerticeTempo n_t1) {
-        boolean inOpen = open.stream().anyMatch(vertice -> vertice.getV().toString().equalsIgnoreCase(n_t1.getV().toString()) && vertice.getT() == n_t1.getT());
-        if (!inOpen) open.add(n_t1);
+        return false;
     }
 
     private static void reconstructPath(VerticeTempo verticeTempo, Agente agente) {
+
         for (int i = verticeTempo.getT(); i < agente.getMax(); i++) {
             agente.settaCellaDiPercorso(verticeTempo.getV(), i);
         }
 
-        for (int i = verticeTempo.getT() - 1; i >= 0; i--) {
-            agente.settaCellaDiPercorso(verticeTempo.getP().getV(), i);
+        while (verticeTempo.getP() != null) {
+            agente.settaCellaDiPercorso(verticeTempo.getP().getV(), verticeTempo.getP().getT());
             verticeTempo = verticeTempo.getP();
         }
     }

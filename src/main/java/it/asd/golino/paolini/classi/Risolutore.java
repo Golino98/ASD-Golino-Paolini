@@ -11,12 +11,12 @@ import java.nio.file.Path;
 import static it.asd.golino.paolini.classi.Grafo.grafo;
 
 public class Risolutore {
-    public static void risolviProblema(Griglia griglia) {
+    public static void risolviProblema() {
         try {
             // Al posto di fare il ciclo potrei passarglieli tutti e lavorare uno alla volta senza dover rifare tutte le volte le inizializzazioni delle variabili
             for (Agente a : Griglia.listaAgenti) {
                 // Modificare in quanto ritorna un agente
-                ReachGoal.calculateReachGoal(grafo, a, a.getCellaStart(), a.getCellaGoal(), griglia.getMax(), griglia);
+                ReachGoal.calculateReachGoal(grafo, a, a.getCellaStart(), a.getCellaGoal(), a.getMax());
             }
 
             // Apri il file per la scrittura
@@ -26,10 +26,8 @@ public class Risolutore {
 
             for (Agente a : Griglia.listaAgenti) {
                 // Scrivi l'output sul file invece di stamparlo sulla console
-                printWriter.println("Agente numero " + a.getIndice());
-                for (int i = 0; i < a.getMax(); i++) {
-                    printWriter.print(a.cellaDiUnPercorso(i).toString());
-                }
+                printWriter.print(a.stampaPercorso());
+
                 printWriter.println();
             }
 

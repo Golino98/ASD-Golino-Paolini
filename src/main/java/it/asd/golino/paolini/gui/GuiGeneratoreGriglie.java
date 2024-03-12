@@ -104,7 +104,7 @@ public class GuiGeneratoreGriglie extends JFrame {
 
                 // Stampo la griglia
                 GeneratoreGriglie.stampaGriglia(griglia);
-                Risolutore.risolviProblema(griglia);
+                Risolutore.risolviProblema();
             }
         } catch (NumberFormatException e) {
             showErrorDialog(ERRORE_CONVERSIONE_NUMERO);

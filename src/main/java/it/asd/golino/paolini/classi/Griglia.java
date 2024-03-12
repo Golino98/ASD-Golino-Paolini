@@ -52,6 +52,10 @@ public class Griglia {
         return griglia;
     }
 
+    public Cella getCella(int riga, int colonna) {
+        return griglia[riga][colonna];
+    }
+
     public int getMax() {
         return max;
     }
@@ -63,9 +67,6 @@ public class Griglia {
     public int getLarghezza() {
         return larghezza;
     }
-
-
-
 
     /**
      * Metodo che permette di generare degli agenti (agente start stato 2, agente goal stato 3)
@@ -94,8 +95,9 @@ public class Griglia {
 
                 foundGoal = cambiaStatoCella(rigaGoal, colonnaGoal, StatoCelle.LIBERA.getValore(), StatoCelle.AGENTE_GOAL.getValore());
             }
-
-            listaAgenti.add(new Agente(new Cella(rigaStart, colonnaStart, StatoCelle.AGENTE_START), new Cella(rigaGoal, colonnaGoal, StatoCelle.AGENTE_GOAL), max));
+            var cellaStart = griglia[rigaStart][colonnaStart];
+            var cellaGoal = griglia[rigaGoal][colonnaGoal];
+            listaAgenti.add(new Agente(cellaStart, cellaGoal, max));
         }
     }
 
@@ -193,7 +195,7 @@ public class Griglia {
                 return false;
         }
 
-        // Controllo la riga a destra
+        // Controllo la colonna a destra
         if (!(x.getColonna() + 1 >= larghezza)) {
             if (griglia[x.getRiga()][x.getColonna() + 1].getCellStatus() != StatoCelle.LIBERA)
                 return false;
@@ -207,7 +209,7 @@ public class Griglia {
 
         // Controllo la colonna a sinistra
         if (!(x.getColonna() - 1 < 0)) {
-            if (griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() != StatoCelle.LIBERA) return false;
+            return griglia[x.getRiga()][x.getColonna() - 1].getCellStatus() == StatoCelle.LIBERA;
         }
         return true;
     }
