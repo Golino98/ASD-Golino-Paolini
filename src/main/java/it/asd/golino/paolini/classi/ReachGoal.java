@@ -59,11 +59,21 @@ public class ReachGoal {
             index = -1;
             Cella n;
 
+            Cella verticeTrovato = null;
+
             if (t < max) {
-                if (G.containsVertex(lowest_f_score_state.getV())) {
-                    for (var edge : G.edgesOf(lowest_f_score_state.getV())) {
+
+                for (var vertex : G.vertexSet()) {
+                    if (vertex.toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())) {
+                        verticeTrovato = vertex;
+                        break;
+                    }
+                }
+
+                if (G.containsVertex(verticeTrovato)) {
+                    for (var edge : G.edgesOf(verticeTrovato)) {
                         n = G.getEdgeTarget(edge);
-                        Grafo.creaConnessioni(n, G);
+                        //Grafo.creaConnessioni(n, G);
 
                         for (var v : closed) {
                             if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
@@ -77,14 +87,13 @@ public class ReachGoal {
 
                             for (Agente a : Griglia.listaAgenti) {
                                 try {
-
                                     if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
                                             (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
                                                     && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
                                         traversable = false;
                                     }
                                 } catch (ArrayIndexOutOfBoundsException ex) {
-                                    break;
+                                    continue;
                                 }
                             }
 
@@ -99,7 +108,7 @@ public class ReachGoal {
 
                                 assert n_t1 != null;
                                 // calcolare w
-                                var edge_v_n = Grafo.grafo.getEdge(lowest_f_score_state.getV(), n);
+                                var edge_v_n = Grafo.grafo.getEdge(verticeTrovato, n);
                                 var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
                                 if (lowest_f_score_state.getG() + costo_edge_v_n < n_t1.getG()) {
                                     n_t1.setP(lowest_f_score_state);
