@@ -34,7 +34,6 @@ public class Costanti {
     public static final String PATH_MST_NO_AGENTS_IMAGE = "output\\grafi\\minSpanningTreeNoAgents.png";
     public static final String PATH_MST_NO_AGENTS_TXT = "output\\grafi\\mstNoAgents.txt";
 
-    public static final String PATH_MST_AGENTS_IMAGE = "output\\grafi\\minSpanningTreeAgents_%d.png";
-    public static final String PATH_MST_AGENTS_TXT = "output\\grafi\\mstAgents_%d.txt";
+    public static final String PERCORSO_NON_TROVATO = "Agente %d.\nNon è stato possibile trovare un percorso per questo agente!\n";
 
 }

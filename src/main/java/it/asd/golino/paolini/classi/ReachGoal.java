@@ -12,9 +12,11 @@ public class ReachGoal {
      * Calcola il percorso ottimale da un punto di partenza a un obiettivo su una griglia utilizzando l'algoritmo A*.
      *
      * @param G    Grafo rappresentante la griglia
+     * @param ag   L'agente che si muove sulla griglia
      * @param init Cella di partenza
      * @param goal Cella di destinazione
      * @param max  Massimo numero di passi consentiti
+     * @return True se è stato trovato un percorso, altrimenti False
      */
     public static boolean calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Agente ag, Cella init, Cella goal, int max) {
         boolean traversable;
@@ -47,20 +49,21 @@ public class ReachGoal {
 
             // Prendo il VerticeTempo con il minor valore della funzione f
             var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
+            int t = lowest_f_score_state.getT();
+
+            // Aggiornamento degli insieme closed e open
             open.remove(lowest_f_score_state);
             closed.add(lowest_f_score_state);
 
+            // Condizione che se verificata indica che sono arrivato al goal
             if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
                 reconstructPath(lowest_f_score_state, ag);
                 return true;
             }
 
-            int t = lowest_f_score_state.getT();
-
             Cella n;
-            boolean trovatoSeStesso = false;
-
             Cella verticeTrovato = null;
+            boolean trovatoSeStesso = false;
 
             if (t < max) {
 
@@ -71,27 +74,22 @@ public class ReachGoal {
                     }
                 }
 
-                var trov = G.edgesOf(verticeTrovato);
-
-                for (var edge : trov) {
+                for (var edge : G.edgesOf(verticeTrovato)) {
                     index = -1;
                     n = G.getEdgeTarget(edge);
 
-                    if(trovatoSeStesso)
-                    {
-                        if(n == verticeTrovato)
-                        {
+                    // Lavorando su dei vertici non potevamo sapere quando il vertice era cappio, quando source e quando target.
+                    // Per evitare di lavorare più volte su sè stesso (andando quindi a perdere vertici con le relative informazioni) abbiamo inserito
+                    // un controllo extra per far sì che si lavorasse al massimo una sola volta sul vertice in questione
+                    if (trovatoSeStesso) {
+                        if (n == verticeTrovato) {
                             n = G.getEdgeSource(edge);
                         }
                     }
 
-                    if(n == verticeTrovato)
-                    {
+                    if (n == verticeTrovato) {
                         trovatoSeStesso = true;
                     }
-
-
-                    //Grafo.creaConnessioni(n, G);
 
                     for (var v : closed) {
                         if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
@@ -102,21 +100,19 @@ public class ReachGoal {
 
                     if (index == -1) {
                         traversable = true;
-
-                        //Parte rimossa per singolo agente, da scommentare per più
-                            for (Agente a : Griglia.listaAgenti) {
-                                try {
-                                    if (a != ag) {
-                                        if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-                                                (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-                                                        && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
-                                            traversable = false;
-                                        }
+                        for (Agente a : Griglia.listaAgenti) {
+                            try {
+                                if (a != ag) {
+                                    if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+                                            (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+                                                    && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+                                        traversable = false;
                                     }
-                                } catch (ArrayIndexOutOfBoundsException ex) {
-                                    continue;
                                 }
+                            } catch (ArrayIndexOutOfBoundsException ex) {
+                                continue;
                             }
+                        }
 
                         if (traversable) {
                             VerticeTempo n_t1 = null;
@@ -128,8 +124,7 @@ public class ReachGoal {
                             }
 
                             assert n_t1 != null;
-                            // calcolare w
-                            // Da controllare che esista
+
                             var edge_v_n = Grafo.grafo.getEdge(verticeTrovato, n);
                             if (edge_v_n == null) {
                                 edge_v_n = Grafo.grafo.getEdge(n, verticeTrovato);
@@ -143,7 +138,6 @@ public class ReachGoal {
                             }
 
                             boolean inOpen = false;
-
                             for (var vertice : open) {
                                 if (vertice.getV().toString().equalsIgnoreCase(v_t.get(v_t.indexOf(n_t1)).getV().toString()) && vertice.getT() == t + 1) {
                                     inOpen = true;
@@ -154,7 +148,6 @@ public class ReachGoal {
                         }
                     }
                 }
-
             }
         }
         return false;
