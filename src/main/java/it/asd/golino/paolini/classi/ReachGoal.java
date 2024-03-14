@@ -86,19 +86,20 @@ public class ReachGoal {
                         if (index == -1) {
                             traversable = true;
 
-                            for (Agente a : Griglia.listaAgenti) {
-                                try {
-                                    if (a != ag) {
-                                        if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-                                                (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-                                                        && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
-                                            traversable = false;
-                                        }
-                                    }
-                                } catch (ArrayIndexOutOfBoundsException ex) {
-                                    continue;
-                                }
-                            }
+                            //Parte rimossa per singolo agente, da scommentare per più
+//                            for (Agente a : Griglia.listaAgenti) {
+//                                try {
+//                                    if (a != ag) {
+//                                        if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+//                                                (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+//                                                        && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+//                                            traversable = false;
+//                                        }
+//                                    }
+//                                } catch (ArrayIndexOutOfBoundsException ex) {
+//                                    continue;
+//                                }
+//                            }
 
                             if (traversable) {
                                 VerticeTempo n_t1 = null;

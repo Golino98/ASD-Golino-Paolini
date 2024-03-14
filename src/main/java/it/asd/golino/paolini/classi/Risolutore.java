@@ -17,6 +17,7 @@ public class Risolutore {
             for (Agente a : Griglia.listaAgenti) {
                 // Modificare in quanto ritorna un agente
                 ReachGoal.calculateReachGoal(grafo, a, a.getCellaStart(), a.getCellaGoal(), a.getMax());
+                System.out.println("Ciao");
             }
 
             // Apri il file per la scrittura
