@@ -58,6 +58,7 @@ public class ReachGoal {
             int t = lowest_f_score_state.getT();
 
             Cella n;
+            boolean trovatoSeStesso = false;
 
             Cella verticeTrovato = null;
 
@@ -70,75 +71,90 @@ public class ReachGoal {
                     }
                 }
 
-                if (G.containsVertex(verticeTrovato)) {
-                    for (var edge : G.edgesOf(verticeTrovato)) {
-                        index = -1;
-                        n = G.getEdgeTarget(edge);
-                        //Grafo.creaConnessioni(n, G);
+                var trov = G.edgesOf(verticeTrovato);
 
-                        for (var v : closed) {
-                            if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
-                                index = closed.indexOf(v);
-                                break;
-                            }
+                for (var edge : trov) {
+                    index = -1;
+                    n = G.getEdgeTarget(edge);
+
+                    if(trovatoSeStesso)
+                    {
+                        if(n == verticeTrovato)
+                        {
+                            n = G.getEdgeSource(edge);
                         }
+                    }
 
-                        if (index == -1) {
-                            traversable = true;
+                    if(n == verticeTrovato)
+                    {
+                        trovatoSeStesso = true;
+                    }
 
-                            //Parte rimossa per singolo agente, da scommentare per più
-//                            for (Agente a : Griglia.listaAgenti) {
-//                                try {
-//                                    if (a != ag) {
-//                                        if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-//                                                (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-//                                                        && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
-//                                            traversable = false;
-//                                        }
-//                                    }
-//                                } catch (ArrayIndexOutOfBoundsException ex) {
-//                                    continue;
-//                                }
-//                            }
 
-                            if (traversable) {
-                                VerticeTempo n_t1 = null;
-                                for (var control : v_t) {
-                                    if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
-                                        n_t1 = control;
-                                        break;
+                    //Grafo.creaConnessioni(n, G);
+
+                    for (var v : closed) {
+                        if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
+                            index = closed.indexOf(v);
+                            break;
+                        }
+                    }
+
+                    if (index == -1) {
+                        traversable = true;
+
+                        //Parte rimossa per singolo agente, da scommentare per più
+                            for (Agente a : Griglia.listaAgenti) {
+                                try {
+                                    if (a != ag) {
+                                        if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
+                                                (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
+                                                        && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
+                                            traversable = false;
+                                        }
                                     }
+                                } catch (ArrayIndexOutOfBoundsException ex) {
+                                    continue;
                                 }
-
-                                assert n_t1 != null;
-                                // calcolare w
-                                // Da controllare che esista
-                                var edge_v_n = Grafo.grafo.getEdge(verticeTrovato, n);
-                                if(edge_v_n == null)
-                                {
-                                    edge_v_n = Grafo.grafo.getEdge(n, verticeTrovato);
-                                }
-
-                                var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
-                                if (lowest_f_score_state.getG() + costo_edge_v_n < v_t.get(v_t.indexOf(n_t1)).getG()) {
-                                    v_t.get(v_t.indexOf(n_t1)).setP(lowest_f_score_state);
-                                    v_t.get(v_t.indexOf(n_t1)).setG(lowest_f_score_state.getG() + costo_edge_v_n);
-                                    v_t.get(v_t.indexOf(n_t1)).setF(v_t.get(v_t.indexOf(n_t1)).getG() + Calcolatore.calcolaEuristica(n, goal));
-                                }
-
-                                boolean inOpen = false;
-
-                                for (var vertice : open) {
-                                    if (vertice.getV().toString().equalsIgnoreCase(v_t.get(v_t.indexOf(n_t1)).getV().toString()) && vertice.getT() == t + 1) {
-                                        inOpen = true;
-                                        break;
-                                    }
-                                }
-                                if (!inOpen) open.add(v_t.get(v_t.indexOf(n_t1)));
                             }
+
+                        if (traversable) {
+                            VerticeTempo n_t1 = null;
+                            for (var control : v_t) {
+                                if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
+                                    n_t1 = control;
+                                    break;
+                                }
+                            }
+
+                            assert n_t1 != null;
+                            // calcolare w
+                            // Da controllare che esista
+                            var edge_v_n = Grafo.grafo.getEdge(verticeTrovato, n);
+                            if (edge_v_n == null) {
+                                edge_v_n = Grafo.grafo.getEdge(n, verticeTrovato);
+                            }
+
+                            var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
+                            if (lowest_f_score_state.getG() + costo_edge_v_n < v_t.get(v_t.indexOf(n_t1)).getG()) {
+                                v_t.get(v_t.indexOf(n_t1)).setP(lowest_f_score_state);
+                                v_t.get(v_t.indexOf(n_t1)).setG(lowest_f_score_state.getG() + costo_edge_v_n);
+                                v_t.get(v_t.indexOf(n_t1)).setF(v_t.get(v_t.indexOf(n_t1)).getG() + Calcolatore.calcolaEuristica(n, goal));
+                            }
+
+                            boolean inOpen = false;
+
+                            for (var vertice : open) {
+                                if (vertice.getV().toString().equalsIgnoreCase(v_t.get(v_t.indexOf(n_t1)).getV().toString()) && vertice.getT() == t + 1) {
+                                    inOpen = true;
+                                    break;
+                                }
+                            }
+                            if (!inOpen) open.add(v_t.get(v_t.indexOf(n_t1)));
                         }
                     }
                 }
+
             }
         }
         return false;
