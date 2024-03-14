@@ -22,7 +22,6 @@ public class ReachGoal {
 
         // Liste per la gestione degli stati aperti e chiusi
         ArrayList<VerticeTempo> closed = new ArrayList<>(), open = new ArrayList<>();
-        open.add(new VerticeTempo(init, 0));
 
         // Lista di vertici temporali (v_t)
         ArrayList<VerticeTempo> v_t = new ArrayList<>();
@@ -34,6 +33,7 @@ public class ReachGoal {
                 if (t == 0 && vertex.toString().equalsIgnoreCase(init.toString())) {
                     verticeTempo.setG(0);
                     verticeTempo.setF(Calcolatore.calcolaEuristica(init, goal));
+                    open.add(verticeTempo);
                 } else {
                     verticeTempo.setG(Double.POSITIVE_INFINITY);
                     verticeTempo.setP(null);
@@ -71,8 +71,8 @@ public class ReachGoal {
                 }
 
                 if (G.containsVertex(verticeTrovato)) {
-                    index = -1;
                     for (var edge : G.edgesOf(verticeTrovato)) {
+                        index = -1;
                         n = G.getEdgeTarget(edge);
                         //Grafo.creaConnessioni(n, G);
 
@@ -112,7 +112,13 @@ public class ReachGoal {
 
                                 assert n_t1 != null;
                                 // calcolare w
+                                // Da controllare che esista
                                 var edge_v_n = Grafo.grafo.getEdge(verticeTrovato, n);
+                                if(edge_v_n == null)
+                                {
+                                    edge_v_n = Grafo.grafo.getEdge(n, verticeTrovato);
+                                }
+
                                 var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
                                 if (lowest_f_score_state.getG() + costo_edge_v_n < v_t.get(v_t.indexOf(n_t1)).getG()) {
                                     v_t.get(v_t.indexOf(n_t1)).setP(lowest_f_score_state);
@@ -123,12 +129,12 @@ public class ReachGoal {
                                 boolean inOpen = false;
 
                                 for (var vertice : open) {
-                                    if (vertice.getV().toString().equalsIgnoreCase( v_t.get(v_t.indexOf(n_t1)).getV().toString()) && vertice.getT() == t + 1) {
+                                    if (vertice.getV().toString().equalsIgnoreCase(v_t.get(v_t.indexOf(n_t1)).getV().toString()) && vertice.getT() == t + 1) {
                                         inOpen = true;
                                         break;
                                     }
                                 }
-                                if (!inOpen) open.add( v_t.get(v_t.indexOf(n_t1)));
+                                if (!inOpen) open.add(v_t.get(v_t.indexOf(n_t1)));
                             }
                         }
                     }

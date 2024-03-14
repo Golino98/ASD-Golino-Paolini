@@ -93,7 +93,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="5"/>
+              <text value="4"/>
             </properties>
           </component>
           <component id="1ebe1" class="javax.swing.JTextField" binding="larghezzaField">
@@ -103,7 +103,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="5"/>
+              <text value="4"/>
             </properties>
           </component>
           <component id="60ed5" class="javax.swing.JLabel" binding="agglomerazioneLabel">
@@ -141,7 +141,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="5"/>
+              <text value="10"/>
             </properties>
           </component>
           <component id="461aa" class="javax.swing.JTextField" binding="numeroAgentiField">
@@ -152,7 +152,7 @@
             </constraints>
             <properties>
               <horizontalAlignment value="4"/>
-              <text value="2"/>
+              <text value="1"/>
             </properties>
           </component>
           <component id="13f01" class="javax.swing.JLabel" binding="numeroAgentiLabel">
@@ -179,7 +179,7 @@
             </constraints>
             <properties>
               <horizontalAlignment value="4"/>
-              <text value="10"/>
+              <text value="4"/>
             </properties>
           </component>
         </children>
