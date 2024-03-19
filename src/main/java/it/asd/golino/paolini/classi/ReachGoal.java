@@ -20,7 +20,7 @@ public class ReachGoal {
      */
     public static boolean calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Agente ag, Cella init, Cella goal, int max) {
         boolean traversable;
-        int index = 0;
+        int index;
 
         // Liste per la gestione degli stati aperti e chiusi
         ArrayList<VerticeTempo> closed = new ArrayList<>(), open = new ArrayList<>();
@@ -51,7 +51,7 @@ public class ReachGoal {
             var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
             int t = lowest_f_score_state.getT();
 
-            // Aggiornamento degli insieme closed e open
+            // Aggiornamento degli insiemi closed e open
             open.remove(lowest_f_score_state);
             closed.add(lowest_f_score_state);
 
@@ -109,8 +109,7 @@ public class ReachGoal {
                                         traversable = false;
                                     }
                                 }
-                            } catch (ArrayIndexOutOfBoundsException ex) {
-                                continue;
+                            } catch (ArrayIndexOutOfBoundsException ignored) {
                             }
                         }
 

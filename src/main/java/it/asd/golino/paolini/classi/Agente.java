@@ -50,6 +50,7 @@ public class Agente {
 
     public void settaCellaDiPercorso(Cella cella, int indice) {
         percorso[indice] = cella;
+        percorso[indice].setStatus(StatoCelle.PERCORSO);
     }
 
     public Color getRandomColor() {
