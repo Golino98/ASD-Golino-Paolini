@@ -9,158 +9,182 @@ import java.util.*;
 public class ReachGoal {
 
     /**
-     * Calcola il percorso ottimale da un punto di partenza a un obiettivo su una griglia utilizzando l'algoritmo A*.
+     * Metodo per calcolare il percorso ottimale utilizzando l'algoritmo A*.
      *
-     * @param G    Grafo rappresentante la griglia
-     * @param ag   L'agente che si muove sulla griglia
-     * @param init Cella di partenza
-     * @param goal Cella di destinazione
-     * @param max  Massimo numero di passi consentiti
+     * @param graph       Grafo rappresentante la griglia
+     * @param agent       L'agente che si muove sulla griglia
+     * @param initialCell Cella di partenza
+     * @param goalCell    Cella di destinazione
+     * @param maxSteps    Massimo numero di passi consentiti
+     * @param <V>         Tipo generico per i vertici del grafo
+     * @param <E>         Tipo generico per gli archi del grafo
      * @return True se è stato trovato un percorso, altrimenti False
      */
-    public static boolean calculateReachGoal(Graph<Cella, DefaultWeightedEdge> G, Agente ag, Cella init, Cella goal, int max) {
-        boolean traversable;
-        int index;
+    public static <V extends Cella, E extends DefaultWeightedEdge> boolean calculateReachGoal(Graph<V, E> graph, Agente agent, V initialCell, V goalCell, int maxSteps) {
+        List<VerticeTempo> closed = new ArrayList<>(); // Lista degli stati chiusi
+        List<VerticeTempo> open = new ArrayList<>(); // Lista degli stati aperti
+        List<VerticeTempo> vTempoList = new ArrayList<>(); // Lista dei vertici temporali
 
-        // Liste per la gestione degli stati aperti e chiusi
-        ArrayList<VerticeTempo> closed = new ArrayList<>(), open = new ArrayList<>();
-
-        // Lista di vertici temporali (v_t)
-        ArrayList<VerticeTempo> v_t = new ArrayList<>();
-
-        // Creazione di vertici temporali per ogni vertice e tempo
-        for (int t = 0; t <= max; t++) {
-            for (var vertex : G.vertexSet()) {
-                VerticeTempo verticeTempo = new VerticeTempo(vertex, t);
-                if (t == 0 && vertex.toString().equalsIgnoreCase(init.toString())) {
+        // Inizializzazione dei vertici temporali per ogni vertice e tempo
+        for (int time = 0; time <= maxSteps; time++) {
+            for (V vertex : graph.vertexSet()) {
+                VerticeTempo verticeTempo = new VerticeTempo(vertex, time);
+                if (time == 0 && vertex.toString().equalsIgnoreCase(initialCell.toString())) {
                     verticeTempo.setG(0);
-                    verticeTempo.setF(Calcolatore.calcolaEuristica(init, goal));
-                    open.add(verticeTempo);
+                    verticeTempo.setF(Calcolatore.calcolaEuristica(initialCell, goalCell));
+                    open.add(verticeTempo); // Aggiungi il vertice temporale iniziale agli stati aperti
                 } else {
                     verticeTempo.setG(Double.POSITIVE_INFINITY);
                     verticeTempo.setP(null);
                 }
-                v_t.add(verticeTempo);
+                vTempoList.add(verticeTempo); // Aggiungi il vertice temporale alla lista vTempoList
             }
         }
 
         // Algoritmo A*
-        while (!(open.isEmpty())) {
+        while (!open.isEmpty()) {
+            VerticeTempo lowestFScoreState = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF)); // Trova lo stato con il punteggio F minimo
+            int currentTime = lowestFScoreState.getT(); // Ottieni il tempo corrente
+            open.remove(lowestFScoreState); // Rimuovi lo stato aperto corrente dalla lista degli stati aperti
+            closed.add(lowestFScoreState); // Aggiungi lo stato corrente alla lista degli stati chiusi
 
-            // Prendo il VerticeTempo con il minor valore della funzione f
-            var lowest_f_score_state = Collections.min(open, Comparator.comparingDouble(VerticeTempo::getF));
-            int t = lowest_f_score_state.getT();
-
-            // Aggiornamento degli insiemi closed e open
-            open.remove(lowest_f_score_state);
-            closed.add(lowest_f_score_state);
-
-            // Condizione che se verificata indica che sono arrivato al goal
-            if (lowest_f_score_state.getV().toString().equalsIgnoreCase(goal.toString())) {
-                reconstructPath(lowest_f_score_state, ag);
+            // Se lo stato corrente corrisponde alla cella di destinazione, ricostruisci il percorso e restituisci true
+            if (lowestFScoreState.getV().toString().equalsIgnoreCase(goalCell.toString())) {
+                reconstructPath(lowestFScoreState, agent);
                 return true;
             }
 
-            Cella n;
-            Cella verticeTrovato = null;
-            boolean trovatoSeStesso = false;
+            V currentVertex = null;
+            boolean foundSelf = false;
 
-            if (t < max) {
-
-                for (var vertex : G.vertexSet()) {
-                    if (vertex.toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())) {
-                        verticeTrovato = vertex;
+            if (currentTime < maxSteps) {
+                // Trova il vertice corrispondente allo stato corrente
+                for (V vertex : graph.vertexSet()) {
+                    if (vertex.toString().equalsIgnoreCase(lowestFScoreState.getV().toString())) {
+                        currentVertex = vertex;
                         break;
                     }
                 }
 
-                for (var edge : G.edgesOf(verticeTrovato)) {
-                    index = -1;
-                    n = G.getEdgeTarget(edge);
+                // Esamina i vicini dello stato corrente
+                for (E edge : graph.edgesOf(currentVertex)) {
+                    int index = -1;
+                    V neighbor = graph.getEdgeTarget(edge); // Ottieni il vicino corrente
 
-                    // Lavorando su dei vertici non potevamo sapere quando il vertice era cappio, quando source e quando target.
-                    // Per evitare di lavorare più volte su sè stesso (andando quindi a perdere vertici con le relative informazioni) abbiamo inserito
-                    // un controllo extra per far sì che si lavorasse al massimo una sola volta sul vertice in questione
-                    if (trovatoSeStesso) {
-                        if (n == verticeTrovato) {
-                            n = G.getEdgeSource(edge);
+                    if (foundSelf) {
+                        if (neighbor == currentVertex) {
+                            neighbor = graph.getEdgeSource(edge);
                         }
                     }
 
-                    if (n == verticeTrovato) {
-                        trovatoSeStesso = true;
+                    if (neighbor == currentVertex) {
+                        foundSelf = true;
                     }
 
-                    for (var v : closed) {
-                        if (v.getV().toString().equalsIgnoreCase(n.toString()) && v.getT() == t + 1) {
+                    // Controlla se il vicino è già stato considerato in uno stato chiuso
+                    for (VerticeTempo v : closed) {
+                        if (v.getV().toString().equalsIgnoreCase(neighbor.toString()) && v.getT() == currentTime + 1) {
                             index = closed.indexOf(v);
                             break;
                         }
                     }
 
+                    // Se il vicino non è stato considerato, verifica se è attraversabile
                     if (index == -1) {
-                        traversable = true;
-                        for (Agente a : Griglia.listaAgenti) {
-                            try {
-                                if (a != ag) {
-                                    if (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(n.toString()) ||
-                                            (a.cellaDiUnPercorso(t + 1).toString().equalsIgnoreCase(lowest_f_score_state.getV().toString())
-                                                    && a.cellaDiUnPercorso(t).toString().equalsIgnoreCase(n.toString()))) {
-                                        traversable = false;
-                                    }
-                                }
-                            } catch (ArrayIndexOutOfBoundsException ignored) {
-                            }
-                        }
-
+                        boolean traversable = isTraversable(agent, currentTime, neighbor, lowestFScoreState);
                         if (traversable) {
-                            VerticeTempo n_t1 = null;
-                            for (var control : v_t) {
-                                if (control.getT() == t + 1 && control.getV().toString().equalsIgnoreCase(n.toString())) {
-                                    n_t1 = control;
-                                    break;
-                                }
+                            // Trova il vertice temporale corrispondente al vicino
+                            VerticeTempo neighborTempo = findVertexTempo(vTempoList, currentTime + 1, neighbor);
+
+                            assert neighborTempo != null;
+
+                            E edgeVn = graph.getEdge(currentVertex, neighbor);
+                            if (edgeVn == null) {
+                                edgeVn = graph.getEdge(neighbor, currentVertex);
                             }
 
-                            assert n_t1 != null;
+                            double edgeWeight = graph.getEdgeWeight(edgeVn); // Ottieni il peso dell'arco tra il vertice corrente e il vicino
 
-                            var edge_v_n = Grafo.grafo.getEdge(verticeTrovato, n);
-                            if (edge_v_n == null) {
-                                edge_v_n = Grafo.grafo.getEdge(n, verticeTrovato);
+                            // Aggiorna i valori G, P e F se si trova un percorso migliore verso il vicino
+                            if (lowestFScoreState.getG() + edgeWeight < neighborTempo.getG()) {
+                                neighborTempo.setP(lowestFScoreState);
+                                neighborTempo.setG(lowestFScoreState.getG() + edgeWeight);
+                                neighborTempo.setF(neighborTempo.getG() + Calcolatore.calcolaEuristica(neighbor, goalCell));
                             }
 
-                            var costo_edge_v_n = Grafo.grafo.getEdgeWeight(edge_v_n);
-                            if (lowest_f_score_state.getG() + costo_edge_v_n < v_t.get(v_t.indexOf(n_t1)).getG()) {
-                                v_t.get(v_t.indexOf(n_t1)).setP(lowest_f_score_state);
-                                v_t.get(v_t.indexOf(n_t1)).setG(lowest_f_score_state.getG() + costo_edge_v_n);
-                                v_t.get(v_t.indexOf(n_t1)).setF(v_t.get(v_t.indexOf(n_t1)).getG() + Calcolatore.calcolaEuristica(n, goal));
+                            // Aggiungi il vicino agli stati aperti se non è già presente
+                            if (!open.contains(neighborTempo)) {
+                                open.add(neighborTempo);
                             }
-
-                            boolean inOpen = false;
-                            for (var vertice : open) {
-                                if (vertice.getV().toString().equalsIgnoreCase(v_t.get(v_t.indexOf(n_t1)).getV().toString()) && vertice.getT() == t + 1) {
-                                    inOpen = true;
-                                    break;
-                                }
-                            }
-                            if (!inOpen) open.add(v_t.get(v_t.indexOf(n_t1)));
                         }
                     }
                 }
             }
         }
-        return false;
+        return false; // Non è stato trovato alcun percorso
     }
 
-    private static void reconstructPath(VerticeTempo verticeTempo, Agente agente) {
+    /**
+     * Metodo per verificare se un vicino è attraversabile.
+     *
+     * @param agent        L'agente che si muove sulla griglia
+     * @param time         Tempo corrente
+     * @param neighbor     Vicino da controllare
+     * @param currentState Stato corrente
+     * @return True se il vicino è attraversabile, altrimenti False
+     */
+    private static boolean isTraversable(Agente agent, int time, Cella neighbor, VerticeTempo currentState) {
+        boolean traversable = true;
+        for (Agente a : Griglia.listaAgenti) {
+            try {
+                if (a != agent) {
+                    Cella cellAtTime = a.cellaDiUnPercorso(time + 1); // Ottieni la cella dell'agente al tempo successivo
+                    Cella cellAtPreviousTime = a.cellaDiUnPercorso(time); // Ottieni la cella dell'agente al tempo corrente
+                    if (cellAtTime.toString().equalsIgnoreCase(neighbor.toString()) ||
+                            (cellAtTime.toString().equalsIgnoreCase(currentState.getV().toString()) &&
+                                    cellAtPreviousTime.toString().equalsIgnoreCase(neighbor.toString()))) {
+                        traversable = false; // Il vicino non è attraversabile se corrisponde alla cella dell'agente
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+            }
+        }
+        return traversable;
+    }
 
+    /**
+     * Metodo per trovare il vertice temporale corrispondente a un determinato tempo e cella.
+     *
+     * @param vTempoList Lista dei vertici temporali
+     * @param time       Tempo da cercare
+     * @param cell       Cella da cercare
+     * @return Il vertice temporale corrispondente, se trovato, altrimenti null
+     */
+    private static VerticeTempo findVertexTempo(List<VerticeTempo> vTempoList, int time, Cella cell) {
+        for (VerticeTempo vertexTempo : vTempoList) {
+            if (vertexTempo.getT() == time && vertexTempo.getV().toString().equalsIgnoreCase(cell.toString())) {
+                return vertexTempo; // Restituisci il vertice temporale corrispondente
+            }
+        }
+        return null; // Non è stato trovato il vertice temporale corrispondente
+    }
+
+    /**
+     * Metodo per ricostruire il percorso ottimale utilizzando i predecessori memorizzati nei vertici temporali.
+     *
+     * @param verticeTempo Il vertice temporale finale
+     * @param agente       L'agente che si muove sulla griglia
+     */
+    private static void reconstructPath(VerticeTempo verticeTempo, Agente agente) {
+        // Imposta le celle del percorso nell'agente a partire dal tempo corrente
         for (int i = verticeTempo.getT(); i < agente.getMax(); i++) {
             agente.settaCellaDiPercorso(verticeTempo.getV(), i);
         }
 
+        // Risale i predecessori fino a raggiungere la cella di partenza
         while (verticeTempo.getP() != null) {
             agente.settaCellaDiPercorso(verticeTempo.getP().getV(), verticeTempo.getP().getT());
-            verticeTempo = verticeTempo.getP();
+            verticeTempo = verticeTempo.getP(); // Passa al predecessore successivo
         }
     }
 }

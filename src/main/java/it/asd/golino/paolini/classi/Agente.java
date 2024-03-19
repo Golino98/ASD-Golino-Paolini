@@ -4,11 +4,7 @@ import it.asd.golino.paolini.utility.Costanti;
 import it.asd.golino.paolini.utility.StatoCelle;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
-import java.util.Stack;
 
 public class Agente {
 
@@ -16,6 +12,8 @@ public class Agente {
     private final Cella cellaGoal;
     private final int indice;
     private final int max;
+
+    private final static Cella notExist = new Cella(-1, -1, StatoCelle.LIBERA);
 
     private final Color randomColor;
 
@@ -40,7 +38,7 @@ public class Agente {
         percorso[0] = cellaStart;
 
         for (int i = 1; i < max; i++) {
-            percorso[i] = new Cella(-1, -1, StatoCelle.LIBERA);
+            percorso[i] = notExist;
         }
     }
 

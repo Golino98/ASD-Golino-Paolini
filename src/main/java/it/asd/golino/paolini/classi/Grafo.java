@@ -25,9 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import java.util.Comparator;
-
-
 import static it.asd.golino.paolini.utility.Costanti.*;
 import static it.asd.golino.paolini.utility.GestoreCartelle.creaCartella;
 

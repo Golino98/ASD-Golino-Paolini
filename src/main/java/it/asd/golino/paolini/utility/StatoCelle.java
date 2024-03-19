@@ -23,7 +23,6 @@ public enum StatoCelle {
             case 1 -> NON_ATTRAVERSABILE;
             case 2 -> AGENTE_START;
             case 3 -> AGENTE_GOAL;
-            case 4 -> PERCORSO;
             default -> null;
         };
     }
