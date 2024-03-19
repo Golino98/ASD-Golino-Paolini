@@ -14,6 +14,7 @@ public class GeneratoreGriglie extends JFrame {
 
     /**
      * Funzione che permette di stampare la griglia iniziale
+     *
      * @param griglia griglia da stampare
      */
     public static void stampaGriglia(Griglia griglia) {
@@ -43,12 +44,13 @@ public class GeneratoreGriglie extends JFrame {
 
                 switch (cella.getCellStatus().getValore()) {
                     case 0:
-                        Vertice.aggiungiVertice(cella);
+                        Grafo.grafo.addVertex(cella);
                         break;
                     case 1:
                         cellPanel.setBackground(Color.BLUE);
                         break;
                     case 2:
+                        Grafo.grafo.addVertex(cella);
                         int rigaStart = i;
                         int colonnaStart = j;
 
@@ -64,6 +66,7 @@ public class GeneratoreGriglie extends JFrame {
                         cellPanel.add(labelStart);
                         break;
                     case 3:
+                        Grafo.grafo.addVertex(cella);
                         int rigaGoal = i;
                         int colonnaGoal = j;
                         Agente agenteGoal = listaAgenti.stream().filter(a -> a.getCellaGoal().getRiga() == rigaGoal
@@ -105,6 +108,7 @@ public class GeneratoreGriglie extends JFrame {
 
     /**
      * Metodo che permette di effettuare lo screen del frame che gli si passa
+     *
      * @param frame sul quale effettuare lo screen
      * @return lo screen appena fatto
      */

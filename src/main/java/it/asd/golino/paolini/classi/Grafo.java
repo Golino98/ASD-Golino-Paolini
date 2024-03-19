@@ -32,13 +32,12 @@ import static it.asd.golino.paolini.utility.Costanti.PNG;
 public class Grafo {
 
     // Creazione di un grafo direzionato pesato utilizzando JGraphT
-    private static final Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    public static final Graph<Cella, DefaultWeightedEdge> grafo = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
     /**
      * Metodo che permette la creazione di un grafo. Aggiunge i vertici alla variabile grafo.
      */
     public static void creaGrafo() {
-        Vertice.getVertici().forEach(grafo::addVertex);
         grafo.vertexSet().forEach(Grafo::creaConnessioni);
         stampaGrafo();
     }
