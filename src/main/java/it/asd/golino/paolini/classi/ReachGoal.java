@@ -206,10 +206,8 @@ public class ReachGoal {
         // Verifica se gli altri agenti condividono celle con l'agente corrente lungo il percorso
         for (int i = vt.getT(); i < percorso.getLength(); i++) {
             for (Agente a : Griglia.listaAgenti) {
-                if (a != agente) {
-                    if (a.cellaDiUnPercorso(i).equals(listaCelle.get(i))) {
-                        return false; // Se c'è una condivisione, restituisci false
-                    }
+                if (a != agente && a.cellaDiUnPercorso(i).equals(listaCelle.get(i))) {
+                    return false; // Se c'è una condivisione, restituisci false
                 }
             }
         }
@@ -230,5 +228,4 @@ public class ReachGoal {
 
         return true; // Restituisci true se tutto è andato bene
     }
-
 }
