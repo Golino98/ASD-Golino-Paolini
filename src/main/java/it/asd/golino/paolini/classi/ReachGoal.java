@@ -54,6 +54,12 @@ public class ReachGoal {
                 return true;
             }
 
+            // Inserimento della strategia alternativa
+
+            // Il percorso rilassto è un percorso ottimo in cui si tiene conto della presenza degli ostacoli
+            // ma si ignora la presenza di altri agenti.
+            if (relaxedPath(agent)) return true;
+
             V currentVertex = null;
             boolean foundSelf = false;
 
@@ -187,4 +193,43 @@ public class ReachGoal {
             verticeTempo = verticeTempo.getP(); // Passa al predecessore successivo
         }
     }
+
+    private static boolean relaxedPath(Agente agente) {
+        // Calcola il percorso minimo dall'inizio alla fine
+        var percorso = Calcolatore.calcolaPercorsoMinimo(agente.getCellaStart(), agente.getCellaGoal());
+        var listaCelle = percorso.getVertexList();
+
+        // Verifica se gli altri agenti condividono celle con l'agente corrente lungo il percorso
+        for (int i = 0; i < percorso.getLength(); i++) {
+            for (Agente a : Griglia.listaAgenti) {
+                if (a != agente) {
+                    if (a.cellaDiUnPercorso(i).equals(listaCelle.get(i))) {
+                        return false; // Se c'è una condivisione, restituisci false
+                    }
+                }
+            }
+        }
+
+        // Imposta le celle rimanenti del percorso come celle di percorso per l'agente corrente
+        for (int i = percorso.getLength(); i < agente.getMax(); i++) {
+            agente.settaCellaDiPercorso(listaCelle.getLast(), i);
+        }
+
+        // Gestisci eventuali eccezioni nell'impostare le celle di percorso
+        int index = -1; // Inizializza l'indice a -1
+        try {
+            for (int i = 0; i < agente.getMax(); i++) {
+                index = i; // Memorizza l'indice corrente nel caso in cui venga generata un'eccezione
+                agente.settaCellaDiPercorso(listaCelle.get(i), i);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            // Se viene generata un'eccezione, imposta le celle rimanenti del percorso come celle di percorso
+            for (int i = index; i < agente.getMax(); i++) {
+                agente.settaCellaDiPercorso(listaCelle.getLast(), i);
+            }
+        }
+
+        return true; // Restituisci true se tutto è andato bene
+    }
+
 }
