@@ -20,7 +20,7 @@ public class ReachGoal {
      * @param <E>         Tipo generico per gli archi del grafo
      * @return True se è stato trovato un percorso, altrimenti False
      */
-    public static <V extends Cella, E extends DefaultWeightedEdge> boolean calculateReachGoal(Graph<V, E> graph, Agente agent, V initialCell, V goalCell, int maxSteps) {
+    public static <V extends Cella, E extends DefaultWeightedEdge> boolean calculateReachGoal(Graph<V, E> graph, Agente agent, V initialCell, V goalCell, int maxSteps, boolean relaxed) {
         List<VerticeTempo> closed = new ArrayList<>(); // Lista degli stati chiusi
         List<VerticeTempo> open = new ArrayList<>(); // Lista degli stati aperti
         List<VerticeTempo> vTempoList = new ArrayList<>(); // Lista dei vertici temporali
@@ -58,7 +58,9 @@ public class ReachGoal {
 
             // Il percorso rilassto è un percorso ottimo in cui si tiene conto della presenza degli ostacoli
             // ma si ignora la presenza di altri agenti.
-            if (relaxedPath(agent)) return true;
+            if (relaxed) {
+                if (relaxedPath(agent, lowestFScoreState)) return true;
+            }
 
             V currentVertex = null;
             boolean foundSelf = false;
@@ -194,13 +196,15 @@ public class ReachGoal {
         }
     }
 
-    private static boolean relaxedPath(Agente agente) {
+    private static boolean relaxedPath(Agente agente, VerticeTempo vt) {
+
+        var v = vt.getV();
         // Calcola il percorso minimo dall'inizio alla fine
-        var percorso = Calcolatore.calcolaPercorsoMinimo(agente.getCellaStart(), agente.getCellaGoal());
+        var percorso = Calcolatore.calcolaPercorsoMinimo(v, agente.getCellaGoal());
         var listaCelle = percorso.getVertexList();
 
         // Verifica se gli altri agenti condividono celle con l'agente corrente lungo il percorso
-        for (int i = 0; i < percorso.getLength(); i++) {
+        for (int i = vt.getT(); i < percorso.getLength(); i++) {
             for (Agente a : Griglia.listaAgenti) {
                 if (a != agente) {
                     if (a.cellaDiUnPercorso(i).equals(listaCelle.get(i))) {
@@ -210,23 +214,18 @@ public class ReachGoal {
             }
         }
 
+        for (int i = vt.getT(); i < percorso.getLength(); i++) {
+            agente.settaCellaDiPercorso(listaCelle.get(i), i);
+        }
+
         // Imposta le celle rimanenti del percorso come celle di percorso per l'agente corrente
         for (int i = percorso.getLength(); i < agente.getMax(); i++) {
             agente.settaCellaDiPercorso(listaCelle.getLast(), i);
         }
 
-        // Gestisci eventuali eccezioni nell'impostare le celle di percorso
-        int index = -1; // Inizializza l'indice a -1
-        try {
-            for (int i = 0; i < agente.getMax(); i++) {
-                index = i; // Memorizza l'indice corrente nel caso in cui venga generata un'eccezione
-                agente.settaCellaDiPercorso(listaCelle.get(i), i);
-            }
-        } catch (IndexOutOfBoundsException e) {
-            // Se viene generata un'eccezione, imposta le celle rimanenti del percorso come celle di percorso
-            for (int i = index; i < agente.getMax(); i++) {
-                agente.settaCellaDiPercorso(listaCelle.getLast(), i);
-            }
+        for (int i = vt.getT(); i >= 0; i--) {
+            agente.settaCellaDiPercorso(vt.getV(), i);
+            vt = vt.getP();
         }
 
         return true; // Restituisci true se tutto è andato bene
