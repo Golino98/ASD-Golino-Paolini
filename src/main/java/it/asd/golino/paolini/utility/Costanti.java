@@ -22,6 +22,7 @@ public class Costanti {
 
     public static final String PATH_CONNESSIONE_CELLE_LIBERE = "output\\grafi\\grafo.txt";
     public static final String CAMMINO_AGENTI = "output\\grafi\\cammino_Agenti.txt";
+    public static final String CAMMINO_AGENTI_RELAXED = "output\\grafi\\cammino_Agenti_relaxed.txt";
 
     public static final String NOME_CELLA = "(%d , %d)";
 

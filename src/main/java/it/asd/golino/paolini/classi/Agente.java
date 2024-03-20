@@ -80,6 +80,12 @@ public class Agente {
         return res;
     }
 
+    public void resetAgente() {
+        for (int i = 1; i < max; i++) {
+            percorso[i] = notExist;
+        }
+    }
+
     public String percorsoInesistente() {
         return String.format(Costanti.PERCORSO_NON_TROVATO, this.indice);
     }
