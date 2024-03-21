@@ -127,22 +127,18 @@ public class GuiGeneratoreGriglie extends JFrame {
 
                 // Misura il tempo e la memoria prima dell'esecuzione della prima funzione
                 long startTime = System.currentTimeMillis();
-                long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
                 // Risolvo il problema
                 Risolutore.risolviProblema(false);
 
                 // Misura il tempo e la memoria dopo l'esecuzione della prima funzione
                 long endTime = System.currentTimeMillis();
-                long endMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
                 // Calcola il tempo e la memoria utilizzata dalla prima funzione
                 long elapsedTime = endTime - startTime;
-                long usedMemory = endMemory - startMemory;
 
                 // Scrivi i risultati della prima funzione sul file
-                firstFunctionBufferedWriter.write("Tempo impiegato dalla prima funzione: " + elapsedTime + " millisecondi\n");
-                firstFunctionBufferedWriter.write("Memoria utilizzata dalla prima funzione: " + usedMemory + " byte\n");
+                firstFunctionBufferedWriter.write("Tempo impiegato dalla prima funzione: " + elapsedTime + " millisecondi\n");;
 
                 firstFunctionBufferedWriter.close();
 
@@ -151,8 +147,6 @@ public class GuiGeneratoreGriglie extends JFrame {
 
                 // Misura il tempo e la memoria prima dell'esecuzione della seconda funzione
                 startTime = System.currentTimeMillis();
-                startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
 
                 for (var a : Griglia.listaAgenti) {
                     a.resetAgente();
@@ -161,16 +155,12 @@ public class GuiGeneratoreGriglie extends JFrame {
                 Risolutore.risolviProblema(true);
 
                 endTime = System.currentTimeMillis();
-                endMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
                 // Calcola il tempo e la memoria utilizzata dalla seconda funzione
                 elapsedTime = endTime - startTime;
-                usedMemory = endMemory - startMemory;
 
                 // Scrivi i risultati della seconda funzione sul file
                 secondFunctionBufferedWriter.write("Tempo impiegato dalla seconda funzione: " + elapsedTime + " millisecondi\n");
-                secondFunctionBufferedWriter.write("Memoria utilizzata dalla seconda funzione: " + usedMemory + " byte\n");
-
                 secondFunctionBufferedWriter.close();
 
             }
