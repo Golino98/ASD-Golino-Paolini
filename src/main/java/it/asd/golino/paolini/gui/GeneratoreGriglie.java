@@ -102,29 +102,29 @@ public class GeneratoreGriglie extends JFrame {
         Grafo.creaGrafo(altezza, larghezza);
 
         // Aggiungi il pannello della griglia alla finestra
-        dialogGrid.add(gridPanel);
+        //dialogGrid.add(gridPanel);
 
         // Ridimensiona la finestra in base al contenuto
-        dialogGrid.pack();
+        //dialogGrid.pack();
 
         // Imposta la finestra al centro dello schermo
-        StyleSystemGui.setCenterOfTheScreen(dialogGrid);
+        //StyleSystemGui.setCenterOfTheScreen(dialogGrid);
 
         // Rendi la finestra visibile
-        dialogGrid.setVisible(true);
+        //dialogGrid.setVisible(true);
 
         // Dopo aver aggiunto i componenti al frame dialogGrid, cattura l'immagine
-        BufferedImage grigliaImage = catturaImmagineGriglia(dialogGrid);
+        //BufferedImage grigliaImage = catturaImmagineGriglia(dialogGrid);
 
-        try {
-            // Specifica il percorso in cui desideri salvare l'immagine
-            File output = new File("output\\griglia.png");
-
-            // Salva l'immagine
-            ImageIO.write(grigliaImage, "png", output);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            // Specifica il percorso in cui desideri salvare l'immagine
+//            File output = new File("output\\griglia.png");
+//
+//            // Salva l'immagine
+//            ImageIO.write(grigliaImage, "png", output);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
     }
 
     /**

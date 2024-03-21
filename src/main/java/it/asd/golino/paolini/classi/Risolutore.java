@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import static it.asd.golino.paolini.classi.Grafo.grafo;
 
 public class Risolutore {
-    public static void risolviProblema() {
+    public static void risolviProblema(Boolean relaxed) {
         try {
             // Apri il file per la scrittura
             File file = new File(String.valueOf(Path.of(Costanti.CAMMINO_AGENTI)));
@@ -21,17 +21,13 @@ public class Risolutore {
             // Al posto di fare il ciclo potrei passarglieli tutti e lavorare uno alla volta senza dover rifare tutte le volte le inizializzazioni delle variabili
             for (Agente a : Griglia.listaAgenti) {
                 // Modificare in quanto ritorna un agente
-                if (ReachGoal.calculateReachGoal(grafo, a, a.getCellaStart(), a.getCellaGoal(), a.getMax(), true)) {
+                if (ReachGoal.calculateReachGoal(grafo, a, a.getCellaStart(), a.getCellaGoal(), a.getMax(), relaxed)) {
                     printWriter.print(a.stampaPercorso());
                     printWriter.println();
                 } else {
                     printWriter.print(a.percorsoInesistente());
                     printWriter.println();
                 }
-            }
-
-            for (Agente ag : Griglia.listaAgenti) {
-                ag.resetAgente();
             }
 
             printWriter.close();

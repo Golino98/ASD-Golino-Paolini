@@ -15,6 +15,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             GuiGeneratoreGriglie gui = new GuiGeneratoreGriglie();
             StyleSystemGui.setSetupWindow(gui);
+            System.exit(3000);
         });
     }
 }
